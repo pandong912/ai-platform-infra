@@ -45,6 +45,17 @@ ingress:
         - path: /
           pathType: Prefix
 
+kong:
+  ingress:
+    enabled: true
+    className: kong
+    path: /hello
+    pathType: Prefix
+  rateLimit:
+    enabled: true
+    minute: 30
+    policy: local
+
 resources:
   requests:
     cpu: 100m

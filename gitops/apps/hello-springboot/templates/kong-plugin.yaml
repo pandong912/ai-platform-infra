@@ -1,0 +1,14 @@
+{{- if and .Values.kong.ingress.enabled .Values.kong.rateLimit.enabled -}}
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: {{ include "hello-springboot.fullname" . }}-rate-limit
+  labels:
+    {{- include "hello-springboot.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.kong.ingress.className }}
+plugin: rate-limiting
+config:
+  minute: {{ .Values.kong.rateLimit.minute }}
+  policy: {{ .Values.kong.rateLimit.policy }}
+{{- end }}
