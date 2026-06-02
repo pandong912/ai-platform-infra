@@ -1,0 +1,31 @@
+kube-prometheus-stack:
+  fullnameOverride: kube-prometheus-stack
+
+  grafana:
+    enabled: true
+    adminPassword: admin123
+    service:
+      type: ClusterIP
+    defaultDashboardsTimezone: browser
+
+  prometheus:
+    prometheusSpec:
+      retention: 7d
+      serviceMonitorSelectorNilUsesHelmValues: false
+      podMonitorSelectorNilUsesHelmValues: false
+      ruleSelectorNilUsesHelmValues: false
+      storageSpec: {}
+
+  alertmanager:
+    enabled: true
+    alertmanagerSpec:
+      storage: {}
+
+  kube-state-metrics:
+    enabled: true
+
+  prometheus-node-exporter:
+    enabled: true
+
+  defaultRules:
+    create: true
