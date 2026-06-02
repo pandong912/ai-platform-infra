@@ -1,7 +1,7 @@
 replicaCount: 2
 
 image:
-  repository: REPLACE_WITH_AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/hello-springboot
+  repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/hello-springboot
   tag: main-initial
   pullPolicy: IfNotPresent
 
