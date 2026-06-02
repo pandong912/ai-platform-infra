@@ -57,6 +57,13 @@ probes:
   livenessPath: /actuator/health/liveness
   readinessPath: /actuator/health/readiness
 
+serviceMonitor:
+  enabled: true
+  interval: 30s
+  path: /actuator/prometheus
+  labels:
+    release: kube-prometheus-stack
+
 nodeSelector: {}
 tolerations: []
 affinity: {}
