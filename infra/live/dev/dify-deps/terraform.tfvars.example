@@ -1,0 +1,23 @@
+aws_region        = "us-east-1"
+project           = "ai-video-platform"
+environment       = "dev"
+owner             = "platform"
+state_bucket_name = "ai-video-platform"
+state_region      = "us-east-1"
+network_state_key = "dev/network.tfstate"
+eks_state_key     = "dev/eks.tfstate"
+
+db_identifier        = "ai-video-dify-dev"
+db_name              = "dify"
+db_username          = "dify"
+db_password          = "REPLACE_WITH_STRONG_PASSWORD"
+db_instance_class    = "db.t4g.micro"
+db_allocated_storage = 20
+db_engine_version    = "16.6"
+
+redis_cluster_id = "ai-video-dify-dev"
+redis_node_type  = "cache.t4g.micro"
+
+dify_bucket_name           = "REPLACE_WITH_GLOBALLY_UNIQUE_DIFY_BUCKET"
+dify_namespace             = "dify"
+dify_service_account_name  = "dify-s3-access"

@@ -1,0 +1,145 @@
+difyAccess:
+  serviceAccountName: dify-s3-access
+  s3RoleArn: arn:aws:iam::209479308066:role/ai-video-platform-dev-dify-s3
+
+dify:
+  global:
+    edition: SELF_HOSTED
+    appSecretKey: nYUaAJ1QPkLD3ug7N1IoxY7M0S0xjO6v4TJ9Ii5HbvpR6Md1M0yKM3UN
+    consoleApiDomain: ""
+    consoleWebDomain: ""
+    serviceApiDomain: ""
+    appApiDomain: ""
+    appWebDomain: ""
+    filesDomain: ""
+
+  postgresql:
+    enabled: false
+
+  redis:
+    enabled: false
+
+  weaviate:
+    enabled: false
+
+  externalPostgres:
+    enabled: true
+    username: dify
+    password: y6BZMpq6k
+    address: ai-video-dify-dev.c8l6oosuk0q6.us-east-1.rds.amazonaws.com
+    port: 5432
+    database:
+      api: dify
+      pluginDaemon: dify
+
+  externalRedis:
+    enabled: true
+    host: ai-video-dify-dev.n266kv.0001.use1.cache.amazonaws.com
+    port: 6379
+    username: ""
+    password: ""
+    db:
+      app: 0
+      celery: 1
+    useSSL: false
+
+  externalS3:
+    enabled: true
+    endpoint: https://s3.us-east-1.amazonaws.com
+    pathStyle: false
+    accessKey: ""
+    secretKey: ""
+    bucketName:
+      api: ai-video-dify-dev-209479308066-us-east-1
+      pluginDaemon: ai-video-dify-dev-209479308066-us-east-1
+    useIAM: true
+    region: us-east-1
+
+  externalPgvector:
+    enabled: true
+    username: dify
+    password: y6BZMpq6k
+    address: ai-video-dify-dev.c8l6oosuk0q6.us-east-1.rds.amazonaws.com
+    port: 5432
+    dbName: dify
+
+  api:
+    serviceAccount:
+      create: false
+      name: dify-s3-access
+      automountServiceAccountToken: true
+    persistence:
+      enabled: false
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+
+  worker:
+    serviceAccount:
+      create: false
+      name: dify-s3-access
+      automountServiceAccountToken: true
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+
+  pluginDaemon:
+    serviceAccount:
+      create: false
+      name: dify-s3-access
+      automountServiceAccountToken: true
+    persistence:
+      enabled: false
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+
+  web:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+
+  sandbox:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+
+  proxy:
+    enabled: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+
+  ingress:
+    enabled: false
+
+kong:
+  ingress:
+    enabled: true
+    className: kong
+    path: /
+    pathType: Prefix
