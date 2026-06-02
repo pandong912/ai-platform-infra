@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/REPLACE_WITH_GITHUB_USER_OR_ORG/ai-platform-infra.git
+    repoURL: https://github.com/pandong912/ai-platform-infra.git
     targetRevision: master
     path: gitops/clusters/dev/apps
   destination:

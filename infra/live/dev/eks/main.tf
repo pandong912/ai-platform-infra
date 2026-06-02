@@ -46,9 +46,6 @@ module "eks" {
     vpc-cni = {
       most_recent = true
     }
-    aws-ebs-csi-driver = {
-      most_recent = true
-    }
     eks-pod-identity-agent = {
       most_recent = true
     }
@@ -59,7 +56,8 @@ module "eks" {
 
   eks_managed_node_groups = {
     default = {
-      name = "${var.cluster_name}-default"
+      # Keep this short: the EKS module appends suffixes for IAM role name_prefix.
+      name = "default"
 
       instance_types = var.node_instance_types
       capacity_type  = "ON_DEMAND"
