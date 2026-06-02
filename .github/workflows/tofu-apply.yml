@@ -1,0 +1,58 @@
+name: OpenTofu Apply
+
+on:
+  workflow_dispatch:
+    inputs:
+      tofu_directory:
+        description: "OpenTofu root module directory"
+        required: true
+        default: "infra/live/dev/network"
+      confirm:
+        description: "Type apply to confirm"
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  apply:
+    name: tofu apply
+    runs-on: ubuntu-latest
+    if: ${{ inputs.confirm == 'apply' }}
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
+      TOFU_DIRECTORY: ${{ inputs.tofu_directory }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_INFRA_APPLY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: github-actions-tofu-apply
+
+      - name: Setup OpenTofu
+        uses: opentofu/setup-opentofu@v1
+
+      - name: Init
+        working-directory: ${{ env.TOFU_DIRECTORY }}
+        run: tofu init
+
+      - name: Format check
+        working-directory: ${{ env.TOFU_DIRECTORY }}
+        run: tofu fmt -check -recursive
+
+      - name: Validate
+        working-directory: ${{ env.TOFU_DIRECTORY }}
+        run: tofu validate
+
+      - name: Plan
+        working-directory: ${{ env.TOFU_DIRECTORY }}
+        run: tofu plan -input=false -out=tfplan
+
+      - name: Apply
+        working-directory: ${{ env.TOFU_DIRECTORY }}
+        run: tofu apply -input=false -auto-approve tfplan

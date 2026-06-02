@@ -1,0 +1,11 @@
+aws-load-balancer-controller:
+  clusterName: ai-video-poc-dev
+  region: us-east-1
+
+  serviceAccount:
+    create: true
+    name: aws-load-balancer-controller
+    annotations:
+      eks.amazonaws.com/role-arn: REPLACE_WITH_AWS_LOAD_BALANCER_CONTROLLER_ROLE_ARN
+
+  replicaCount: 2

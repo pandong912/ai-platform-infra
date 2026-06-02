@@ -1,0 +1,6 @@
+aws_region      = "us-east-1"
+project         = "ai-video-platform"
+environment     = "dev"
+owner           = "platform"
+repository_name = "hello-springboot"
+max_images      = 50

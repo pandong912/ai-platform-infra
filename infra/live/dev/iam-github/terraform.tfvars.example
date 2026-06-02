@@ -1,0 +1,11 @@
+aws_region   = "us-east-1"
+project      = "ai-video-platform"
+environment  = "dev"
+owner        = "platform"
+github_owner = "REPLACE_WITH_GITHUB_USER_OR_ORG"
+infra_repo   = "ai-platform-infra"
+app_repo     = "hello-springboot-service"
+deploy_branch = "master"
+
+# PoC convenience only. Replace with least-privilege policies before production.
+attach_admin_policy_to_infra_apply = true

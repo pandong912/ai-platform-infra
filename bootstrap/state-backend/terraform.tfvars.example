@@ -1,0 +1,6 @@
+aws_region        = "us-east-1"
+project           = "ai-video-platform"
+environment       = "dev"
+owner             = "platform"
+state_bucket_name = "REPLACE_WITH_GLOBALLY_UNIQUE_BUCKET_NAME"
+lock_table_name   = "ai-video-platform-dev-tofu-locks"
