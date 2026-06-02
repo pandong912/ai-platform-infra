@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "logto.fullname" . }}
+  labels:
+    {{- include "logto.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "logto.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "logto.selectorLabels" . | nindent 8 }}
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: connectors
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+      initContainers:
+        - name: connectors
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - npm run cli connector add -- --official
+          volumeMounts:
+            - name: connectors
+              mountPath: /etc/logto/packages/core/connectors
+            - name: tmp
+              mountPath: /tmp
+      containers:
+        - name: logto
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - npm run cli db seed -- --swe && npm start
+          env:
+            - name: TRUST_PROXY_HEADER
+              value: {{ .Values.logto.trustProxyHeader | quote }}
+            - name: ENDPOINT
+              value: {{ .Values.logto.endpoint | quote }}
+            - name: ADMIN_ENDPOINT
+              value: {{ .Values.logto.adminEndpoint | quote }}
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.logto.secretName }}
+                  key: DB_URL
+            - name: SECRET_VAULT_KEK
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.logto.secretName }}
+                  key: SECRET_VAULT_KEK
+          ports:
+            - name: core
+              containerPort: {{ .Values.service.corePort }}
+            - name: admin
+              containerPort: {{ .Values.service.adminPort }}
+          readinessProbe:
+            httpGet:
+              path: /api/status
+              port: core
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/status
+              port: core
+            initialDelaySeconds: 60
+            periodSeconds: 20
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: connectors
+              mountPath: /etc/logto/packages/core/connectors
+            - name: tmp
+              mountPath: /tmp
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

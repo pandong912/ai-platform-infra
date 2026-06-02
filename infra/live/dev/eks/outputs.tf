@@ -24,6 +24,11 @@ output "aws_load_balancer_controller_role_arn" {
   value       = module.aws_load_balancer_controller_irsa.iam_role_arn
 }
 
+output "node_security_group_id" {
+  description = "Security group ID attached to EKS worker nodes."
+  value       = module.eks.node_security_group_id
+}
+
 output "configure_kubectl_command" {
   description = "Command to configure kubectl for this cluster."
   value       = "aws eks update-kubeconfig --region ${var.aws_region} --name ${module.eks.cluster_name}"
