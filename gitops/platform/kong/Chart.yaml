@@ -1,0 +1,9 @@
+apiVersion: v2
+name: kong-wrapper
+description: GitOps wrapper for Kong Gateway and Kong Ingress Controller
+type: application
+version: 0.1.0
+dependencies:
+  - name: kong
+    version: 3.2.0
+    repository: https://charts.konghq.com

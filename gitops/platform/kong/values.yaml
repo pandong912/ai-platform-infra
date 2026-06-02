@@ -1,0 +1,53 @@
+kong:
+  fullnameOverride: kong
+
+  env:
+    database: "off"
+    router_flavor: traditional
+
+  ingressController:
+    enabled: true
+    ingressClass: kong
+    createIngressClass: true
+    env:
+      publish_service: kong/kong-proxy
+
+  proxy:
+    enabled: true
+    type: ClusterIP
+    http:
+      enabled: true
+      servicePort: 80
+      containerPort: 8000
+    tls:
+      enabled: false
+
+  admin:
+    enabled: false
+
+  manager:
+    enabled: false
+
+  portal:
+    enabled: false
+
+  portalapi:
+    enabled: false
+
+  postgresql:
+    enabled: false
+
+  serviceMonitor:
+    enabled: true
+    labels:
+      release: kube-prometheus-stack
+
+kongAlb:
+  enabled: true
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /status
+    alb.ingress.kubernetes.io/success-codes: "200-404"
