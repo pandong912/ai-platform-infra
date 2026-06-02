@@ -1,0 +1,6 @@
+apiVersion: v2
+name: hello-springboot
+description: Minimal Spring Boot hello service for the EKS CI/CD PoC
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

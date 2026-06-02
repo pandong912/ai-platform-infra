@@ -1,0 +1,62 @@
+replicaCount: 2
+
+image:
+  repository: REPLACE_WITH_AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/hello-springboot
+  tag: main-initial
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  fsGroup: 10001
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: true
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/readiness
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+  hosts:
+    - host: ""
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+probes:
+  livenessPath: /actuator/health/liveness
+  readinessPath: /actuator/health/readiness
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

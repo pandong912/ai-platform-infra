@@ -1,0 +1,7 @@
+aws_region         = "us-east-1"
+project            = "ai-video-platform"
+environment        = "dev"
+owner              = "platform"
+vpc_cidr           = "10.40.0.0/16"
+az_count           = 2
+single_nat_gateway = true

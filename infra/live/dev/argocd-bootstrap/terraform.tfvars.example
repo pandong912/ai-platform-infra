@@ -1,0 +1,14 @@
+aws_region        = "us-east-1"
+project           = "ai-video-platform"
+environment       = "dev"
+owner             = "platform"
+state_bucket_name = "REPLACE_WITH_STATE_BUCKET"
+state_region      = "us-east-1"
+eks_state_key     = "dev/eks.tfstate"
+
+gitops_repo_url      = "https://github.com/REPLACE_WITH_GITHUB_USER_OR_ORG/ai-platform-infra.git"
+gitops_target_revision = "master"
+
+# Required if the GitOps repository is private.
+gitops_repo_username = "REPLACE_WITH_GITHUB_USERNAME"
+gitops_repo_password = "REPLACE_WITH_FINE_GRAINED_TOKEN"

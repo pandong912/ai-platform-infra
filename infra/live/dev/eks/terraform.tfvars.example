@@ -1,0 +1,14 @@
+aws_region        = "us-east-1"
+project           = "ai-video-platform"
+environment       = "dev"
+owner             = "platform"
+cluster_name      = "ai-video-poc-dev"
+cluster_version   = "1.31"
+node_instance_types = ["t3.medium"]
+node_min_size     = 1
+node_desired_size = 2
+node_max_size     = 3
+
+state_bucket_name = "REPLACE_WITH_STATE_BUCKET"
+state_region      = "us-east-1"
+network_state_key = "dev/network.tfstate"
