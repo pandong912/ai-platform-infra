@@ -1,0 +1,11 @@
+aws_region        = "us-east-1"
+project           = "ai-video-platform"
+environment       = "dev"
+owner             = "platform"
+state_bucket_name = "ai-video-platform"
+state_region      = "us-east-1"
+eks_state_key     = "dev/eks.tfstate"
+
+namespace            = "external-secrets"
+service_account_name = "external-secrets"
+secrets_path_prefix  = "ai-video-platform/dev"
