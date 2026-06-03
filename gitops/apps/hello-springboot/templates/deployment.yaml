@@ -25,6 +25,10 @@ spec:
           image: "{{ .Values.components.web.image.repository }}:{{ .Values.components.web.image.tag }}"
           imagePullPolicy: {{ .Values.components.web.image.pullPolicy }}
           env:
+            - name: SERVICE_NAME
+              value: {{ .Values.components.web.name | quote }}
+            - name: APP_ENV
+              value: "dev"
             {{- range $name, $value := .Values.components.web.env }}
             - name: {{ $name }}
               value: {{ $value | quote }}

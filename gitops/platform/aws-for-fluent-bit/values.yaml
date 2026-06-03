@@ -1,0 +1,62 @@
+aws-for-fluent-bit:
+  serviceAccount:
+    create: true
+    name: fluent-bit
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::209479308066:role/ai-video-platform-dev-fluent-bit-opensearch
+
+  cloudWatch:
+    enabled: false
+  cloudWatchLogs:
+    enabled: false
+  firehose:
+    enabled: false
+  kinesis:
+    enabled: false
+
+  opensearch:
+    enabled: true
+    match: "*"
+    host: vpc-ai-video-logs-dev-llixvifeeidk3w5mfhsrdwavoy.us-east-1.es.amazonaws.com
+    port: "443"
+    tls: "On"
+    awsRegion: "us-east-1"
+    awsAuth: "On"
+    index: "eks-dev-logs"
+    logstashFormat: "On"
+    logstashPrefix: "eks-dev"
+    logstashDateFormat: "%Y.%m.%d"
+    timeKey: "@timestamp"
+    suppressTypeName: "On"
+    replaceDots: "On"
+    traceOutput: "Off"
+    traceError: "Off"
+
+  input:
+    enabled: true
+    tag: "kube.*"
+    path: "/var/log/containers/*.log"
+    db: "/var/log/flb_kube.db"
+    parser: "docker"
+    dockerMode: "On"
+    memBufLimit: "50MB"
+    skipLongLines: "On"
+    refreshInterval: 10
+
+  filter:
+    enabled: true
+    match: "kube.*"
+    kubeURL: "https://kubernetes.default.svc:443"
+    mergeLog: "On"
+    mergeLogKey: "log_processed"
+    keepLog: "On"
+    k8sLoggingParser: "On"
+    k8sLoggingExclude: "On"
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi

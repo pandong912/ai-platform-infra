@@ -1,0 +1,16 @@
+aws_region        = "us-east-1"
+project           = "ai-video-platform"
+environment       = "dev"
+owner             = "platform"
+state_bucket_name = "ai-video-platform"
+state_region      = "us-east-1"
+network_state_key = "dev/network.tfstate"
+eks_state_key     = "dev/eks.tfstate"
+
+domain_name   = "ai-video-logs-dev"
+engine_version = "OpenSearch_2.17"
+instance_type = "t3.small.search"
+volume_size   = 20
+
+fluent_bit_namespace            = "logging"
+fluent_bit_service_account_name = "fluent-bit"

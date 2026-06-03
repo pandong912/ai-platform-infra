@@ -1,0 +1,9 @@
+apiVersion: v2
+name: aws-for-fluent-bit-wrapper
+description: GitOps wrapper for AWS for Fluent Bit shipping EKS logs to OpenSearch
+type: application
+version: 0.1.0
+dependencies:
+  - name: aws-for-fluent-bit
+    version: 0.2.0
+    repository: https://aws.github.io/eks-charts
