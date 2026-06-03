@@ -32,15 +32,13 @@ spec:
               containerPort: {{ .Values.components.grpc.service.grpcPort }}
               protocol: TCP
           livenessProbe:
-            httpGet:
-              path: {{ .Values.probes.livenessPath }}
-              port: http
+            tcpSocket:
+              port: grpc
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
-            httpGet:
-              path: {{ .Values.probes.readinessPath }}
-              port: http
+            tcpSocket:
+              port: grpc
             initialDelaySeconds: 10
             periodSeconds: 5
           securityContext:
