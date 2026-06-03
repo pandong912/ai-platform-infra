@@ -30,6 +30,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 8080
+  grpcPort: 9090
 
 ingress:
   enabled: false
