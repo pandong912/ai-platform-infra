@@ -15,6 +15,7 @@ spec:
   selector:
     matchLabels:
       {{- include "hello-springboot.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: web
   endpoints:
     - port: http
       path: {{ .Values.serviceMonitor.path }}

@@ -19,7 +19,7 @@ spec:
             pathType: {{ .Values.kong.ingress.pathType }}
             backend:
               service:
-                name: {{ include "hello-springboot.fullname" . }}
+                name: {{ .Values.components.web.name }}
                 port:
-                  number: {{ .Values.service.port }}
+                  number: {{ .Values.components.web.service.port }}
 {{- end }}

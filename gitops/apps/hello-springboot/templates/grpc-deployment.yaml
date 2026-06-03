@@ -1,37 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.components.web.name }}
+  name: {{ .Values.components.grpc.name }}
   labels:
     {{- include "hello-springboot.labels" . | nindent 4 }}
-    app.kubernetes.io/component: web
+    app.kubernetes.io/component: grpc
 spec:
-  replicas: {{ .Values.components.web.replicaCount }}
+  replicas: {{ .Values.components.grpc.replicaCount }}
   selector:
     matchLabels:
       {{- include "hello-springboot.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: web
+      app.kubernetes.io/component: grpc
   template:
     metadata:
       labels:
         {{- include "hello-springboot.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: web
+        app.kubernetes.io/component: grpc
     spec:
       serviceAccountName: {{ include "hello-springboot.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: hello-web
-          image: "{{ .Values.components.web.image.repository }}:{{ .Values.components.web.image.tag }}"
-          imagePullPolicy: {{ .Values.components.web.image.pullPolicy }}
-          env:
-            {{- range $name, $value := .Values.components.web.env }}
-            - name: {{ $name }}
-              value: {{ $value | quote }}
-            {{- end }}
+        - name: hello-grpc
+          image: "{{ .Values.components.grpc.image.repository }}:{{ .Values.components.grpc.image.tag }}"
+          imagePullPolicy: {{ .Values.components.grpc.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.components.web.service.port }}
+              containerPort: {{ .Values.components.grpc.service.httpPort }}
+              protocol: TCP
+            - name: grpc
+              containerPort: {{ .Values.components.grpc.service.grpcPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -48,22 +46,10 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           resources:
-            {{- toYaml .Values.components.web.resources | nindent 12 }}
+            {{- toYaml .Values.components.grpc.resources | nindent 12 }}
           volumeMounts:
             - name: tmp
               mountPath: /tmp
       volumes:
         - name: tmp
           emptyDir: {}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}

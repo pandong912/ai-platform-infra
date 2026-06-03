@@ -1,37 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.components.web.name }}
+  name: {{ .Values.components.dubbo.name }}
   labels:
     {{- include "hello-springboot.labels" . | nindent 4 }}
-    app.kubernetes.io/component: web
+    app.kubernetes.io/component: dubbo
 spec:
-  replicas: {{ .Values.components.web.replicaCount }}
+  replicas: {{ .Values.components.dubbo.replicaCount }}
   selector:
     matchLabels:
       {{- include "hello-springboot.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: web
+      app.kubernetes.io/component: dubbo
   template:
     metadata:
       labels:
         {{- include "hello-springboot.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: web
+        app.kubernetes.io/component: dubbo
     spec:
       serviceAccountName: {{ include "hello-springboot.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: hello-web
-          image: "{{ .Values.components.web.image.repository }}:{{ .Values.components.web.image.tag }}"
-          imagePullPolicy: {{ .Values.components.web.image.pullPolicy }}
-          env:
-            {{- range $name, $value := .Values.components.web.env }}
-            - name: {{ $name }}
-              value: {{ $value | quote }}
-            {{- end }}
+        - name: hello-dubbo
+          image: "{{ .Values.components.dubbo.image.repository }}:{{ .Values.components.dubbo.image.tag }}"
+          imagePullPolicy: {{ .Values.components.dubbo.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.components.web.service.port }}
+              containerPort: {{ .Values.components.dubbo.service.httpPort }}
+              protocol: TCP
+            - name: dubbo-tri
+              containerPort: {{ .Values.components.dubbo.service.dubboPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -48,22 +46,10 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           resources:
-            {{- toYaml .Values.components.web.resources | nindent 12 }}
+            {{- toYaml .Values.components.dubbo.resources | nindent 12 }}
           volumeMounts:
             - name: tmp
               mountPath: /tmp
       volumes:
         - name: tmp
           emptyDir: {}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
