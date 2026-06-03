@@ -78,6 +78,10 @@ securityContext:
 ingress:
   enabled: false
 
+rollout:
+  canaryWeight: 50
+  pauseDuration: 30s
+
 kong:
   ingress:
     enabled: true
