@@ -1,12 +1,60 @@
-replicaCount: 2
-
-image:
-  repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/hello-springboot
-  tag: master-b73a09b
-  pullPolicy: IfNotPresent
-
-nameOverride: ""
-fullnameOverride: ""
+components:
+  web:
+    name: hello-web
+    replicaCount: 2
+    image:
+      repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/hello-springboot
+      tag: web-initial
+      pullPolicy: IfNotPresent
+    service:
+      type: ClusterIP
+      port: 8080
+    env:
+      HELLO_GRPC_TARGET: hello-grpc.hello.svc.cluster.local:9090
+      HELLO_DUBBO_URL: tri://hello-dubbo.hello.svc.cluster.local:50051
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  grpc:
+    name: hello-grpc
+    replicaCount: 1
+    image:
+      repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/hello-springboot
+      tag: grpc-initial
+      pullPolicy: IfNotPresent
+    service:
+      type: ClusterIP
+      httpPort: 8081
+      grpcPort: 9090
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  dubbo:
+    name: hello-dubbo
+    replicaCount: 1
+    image:
+      repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/hello-springboot
+      tag: dubbo-initial
+      pullPolicy: IfNotPresent
+    service:
+      type: ClusterIP
+      httpPort: 8082
+      dubboPort: 50051
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
 
 serviceAccount:
   create: true
@@ -27,24 +75,8 @@ securityContext:
       - ALL
   readOnlyRootFilesystem: true
 
-service:
-  type: ClusterIP
-  port: 8080
-  grpcPort: 9090
-
 ingress:
   enabled: false
-  className: alb
-  annotations:
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/readiness
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
-  hosts:
-    - host: ""
-      paths:
-        - path: /
-          pathType: Prefix
 
 kong:
   ingress:
@@ -56,14 +88,6 @@ kong:
     enabled: true
     minute: 30
     policy: local
-
-resources:
-  requests:
-    cpu: 100m
-    memory: 256Mi
-  limits:
-    cpu: 500m
-    memory: 512Mi
 
 probes:
   livenessPath: /actuator/health/liveness

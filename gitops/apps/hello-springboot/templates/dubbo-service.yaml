@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.components.dubbo.name }}
+  labels:
+    {{- include "hello-springboot.labels" . | nindent 4 }}
+    app.kubernetes.io/component: dubbo
+spec:
+  type: {{ .Values.components.dubbo.service.type }}
+  ports:
+    - port: {{ .Values.components.dubbo.service.httpPort }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: {{ .Values.components.dubbo.service.dubboPort }}
+      targetPort: dubbo-tri
+      protocol: TCP
+      name: dubbo-tri
+  selector:
+    {{- include "hello-springboot.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: dubbo
