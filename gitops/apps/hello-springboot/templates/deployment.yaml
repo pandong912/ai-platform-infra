@@ -29,6 +29,9 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+            - name: grpc
+              containerPort: {{ .Values.service.grpcPort }}
+              protocol: TCP
           livenessProbe:
             httpGet:
               path: {{ .Values.probes.livenessPath }}
