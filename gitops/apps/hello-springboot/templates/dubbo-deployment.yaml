@@ -24,6 +24,11 @@ spec:
         - name: hello-dubbo
           image: "{{ .Values.components.dubbo.image.repository }}:{{ .Values.components.dubbo.image.tag }}"
           imagePullPolicy: {{ .Values.components.dubbo.image.pullPolicy }}
+          env:
+            - name: SERVICE_NAME
+              value: {{ .Values.components.dubbo.name | quote }}
+            - name: APP_ENV
+              value: "dev"
           ports:
             - name: http
               containerPort: {{ .Values.components.dubbo.service.httpPort }}

@@ -24,6 +24,11 @@ spec:
         - name: hello-grpc
           image: "{{ .Values.components.grpc.image.repository }}:{{ .Values.components.grpc.image.tag }}"
           imagePullPolicy: {{ .Values.components.grpc.image.pullPolicy }}
+          env:
+            - name: SERVICE_NAME
+              value: {{ .Values.components.grpc.name | quote }}
+            - name: APP_ENV
+              value: "dev"
           ports:
             - name: http
               containerPort: {{ .Values.components.grpc.service.httpPort }}
