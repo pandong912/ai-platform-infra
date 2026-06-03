@@ -1,5 +1,5 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: {{ .Values.components.web.name }}
   labels:
@@ -7,6 +7,12 @@ metadata:
     app.kubernetes.io/component: web
 spec:
   replicas: {{ .Values.components.web.replicaCount }}
+  strategy:
+    canary:
+      steps:
+        - setWeight: {{ .Values.rollout.canaryWeight }}
+        - pause:
+            duration: {{ .Values.rollout.pauseDuration }}
   selector:
     matchLabels:
       {{- include "hello-springboot.selectorLabels" . | nindent 6 }}

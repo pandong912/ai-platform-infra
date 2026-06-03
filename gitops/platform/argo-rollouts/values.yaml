@@ -1,0 +1,15 @@
+argo-rollouts:
+  dashboard:
+    enabled: true
+    readonly: false
+    service:
+      type: ClusterIP
+      port: 3100
+
+  controller:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        additionalLabels:
+          release: kube-prometheus-stack

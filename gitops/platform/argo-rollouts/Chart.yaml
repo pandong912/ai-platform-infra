@@ -1,0 +1,9 @@
+apiVersion: v2
+name: argo-rollouts-wrapper
+description: GitOps wrapper for Argo Rollouts controller and dashboard
+type: application
+version: 0.1.0
+dependencies:
+  - name: argo-rollouts
+    version: 2.40.10
+    repository: https://argoproj.github.io/argo-helm
