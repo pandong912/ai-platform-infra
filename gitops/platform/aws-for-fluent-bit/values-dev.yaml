@@ -3,7 +3,7 @@ aws-for-fluent-bit:
     create: true
     name: fluent-bit
     annotations:
-      eks.amazonaws.com/role-arn: rn:aws:iam::209479308066:role/ai-video-platform-dev-fluent-bit-opensearch
+      eks.amazonaws.com/role-arn: arn:aws:iam::209479308066:role/ai-video-platform-dev-fluent-bit-opensearch
 
   cloudWatch:
     enabled: false
