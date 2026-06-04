@@ -1,0 +1,28 @@
+aws_region        = "us-east-1"
+project           = "ai-video-platform"
+environment       = "dev"
+owner             = "platform"
+state_bucket_name = "ai-video-platform"
+state_region      = "us-east-1"
+network_state_key = "dev/network.tfstate"
+eks_state_key     = "dev/eks.tfstate"
+
+db_identifier        = "ziyuanqishuo-dev"
+db_name              = "ziyuanqishuo"
+db_username          = "ziyuanqishuo"
+db_password          = "REPLACE_WITH_STRONG_PASSWORD"
+db_instance_class    = "db.t4g.micro"
+db_allocated_storage = 20
+db_engine_version    = "16.6"
+
+# Temporary public RDS access for development only.
+# Keep false by default. If enabled, only narrow /32 CIDRs are allowed.
+enable_public_db_access = false
+allowed_db_client_cidrs = [
+  "103.167.26.54/32",
+  "210.12.12.8/32",
+]
+
+github_owner  = "xiongtao00"
+github_repo   = "ziyuanqishuo"
+deploy_branch = "main"

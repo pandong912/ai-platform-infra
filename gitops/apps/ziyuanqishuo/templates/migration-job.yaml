@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ziyuanqishuo-db-migration
+  labels:
+    {{- include "ziyuanqishuo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: db-migration
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+spec:
+  backoffLimit: 2
+  template:
+    metadata:
+      labels:
+        {{- include "ziyuanqishuo.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: db-migration
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ include "ziyuanqishuo.serviceAccountName" . }}
+      containers:
+        - name: db-migration
+          image: "{{ .Values.components.migration.image.repository }}:{{ .Values.components.migration.image.tag }}"
+          imagePullPolicy: {{ .Values.components.migration.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.database.secretName }}

@@ -1,0 +1,79 @@
+database:
+  secretName: ziyuanqishuo-db
+
+components:
+  migration:
+    image:
+      repository: REPLACE_WITH_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/ziyuanqishuo-db-migration
+      tag: migration-initial
+      pullPolicy: IfNotPresent
+  content:
+    name: ziyuanqishuo-content
+    replicaCount: 1
+    image:
+      repository: REPLACE_WITH_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/ziyuanqishuo-content
+      tag: content-initial
+      pullPolicy: IfNotPresent
+    service:
+      type: ClusterIP
+      port: 8082
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+  management:
+    name: ziyuanqishuo-management
+    replicaCount: 1
+    image:
+      repository: REPLACE_WITH_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/ziyuanqishuo-management
+      tag: management-initial
+      pullPolicy: IfNotPresent
+    service:
+      type: ClusterIP
+      port: 9080
+    env:
+      MANAGEMENT_AUTH_BYPASS_ENABLED: "true"
+      STORAGE_PROVIDER: minio
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  fsGroup: 10001
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: true
+
+probes:
+  livenessPath: /actuator/health/liveness
+  readinessPath: /actuator/health/readiness
+
+kong:
+  ingress:
+    enabled: true
+    className: kong
+    contentPath: /hanzi/content
+    managementPath: /hanzi/management
+    pathType: Prefix
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

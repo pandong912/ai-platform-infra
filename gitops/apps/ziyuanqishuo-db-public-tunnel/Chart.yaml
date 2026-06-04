@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ziyuanqishuo-db-public-tunnel
+description: Temporary public NLB tunnel to private Ziyuanqishuo RDS for development testing
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
