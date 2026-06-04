@@ -77,6 +77,74 @@ resource "aws_ecr_lifecycle_policy" "repositories" {
   })
 }
 
+resource "aws_s3_bucket" "media" {
+  bucket = var.media_bucket_name
+}
+
+resource "aws_s3_bucket_public_access_block" "media" {
+  bucket = aws_s3_bucket.media.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_versioning" "media" {
+  bucket = aws_s3_bucket.media.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "media" {
+  bucket = aws_s3_bucket.media.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_iam_user" "media" {
+  name = var.media_iam_user_name
+}
+
+resource "aws_iam_access_key" "media" {
+  user = aws_iam_user.media.name
+}
+
+data "aws_iam_policy_document" "media" {
+  statement {
+    sid    = "ListBucket"
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket",
+    ]
+    resources = [aws_s3_bucket.media.arn]
+  }
+
+  statement {
+    sid    = "ReadWriteObjects"
+    effect = "Allow"
+    actions = [
+      "s3:AbortMultipartUpload",
+      "s3:DeleteObject",
+      "s3:GetObject",
+      "s3:PutObject",
+    ]
+    resources = ["${aws_s3_bucket.media.arn}/*"]
+  }
+}
+
+resource "aws_iam_user_policy" "media" {
+  name   = "${var.media_iam_user_name}-s3"
+  user   = aws_iam_user.media.name
+  policy = data.aws_iam_policy_document.media.json
+}
+
 resource "aws_db_subnet_group" "ziyuanqishuo" {
   name       = "${var.db_identifier}-subnets"
   subnet_ids = data.terraform_remote_state.network.outputs.private_subnet_ids

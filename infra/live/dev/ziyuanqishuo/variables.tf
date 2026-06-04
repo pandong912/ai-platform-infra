@@ -87,25 +87,6 @@ variable "db_engine_version" {
   default     = "16.6"
 }
 
-variable "enable_public_db_access" {
-  description = "Temporarily expose the RDS instance through public subnets. Use only with narrow /32 CIDRs."
-  type        = bool
-  default     = false
-}
-
-variable "allowed_db_client_cidrs" {
-  description = "Public client CIDRs allowed to connect to RDS when enable_public_db_access is true."
-  type        = list(string)
-  default     = []
-
-  validation {
-    condition = alltrue([
-      for cidr in var.allowed_db_client_cidrs : can(cidrhost(cidr, 0))
-    ])
-    error_message = "All allowed_db_client_cidrs values must be valid CIDR blocks."
-  }
-}
-
 variable "github_owner" {
   description = "GitHub organization or user that owns the ziyuanqishuo repository."
   type        = string
@@ -122,4 +103,15 @@ variable "deploy_branch" {
   description = "Branch allowed to assume the app CI role."
   type        = string
   default     = "main"
+}
+
+variable "media_bucket_name" {
+  description = "Globally unique S3 bucket name for Ziyuanqishuo media resources."
+  type        = string
+}
+
+variable "media_iam_user_name" {
+  description = "IAM user name for application-level S3 compatible access."
+  type        = string
+  default     = "ziyuanqishuo-dev-media"
 }

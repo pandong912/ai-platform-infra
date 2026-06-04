@@ -30,3 +30,29 @@ output "github_ci_role_arn" {
   description = "GitHub Actions role ARN for ziyuanqishuo."
   value       = aws_iam_role.github_ci.arn
 }
+
+output "media_bucket_name" {
+  description = "S3 bucket name for Ziyuanqishuo media resources."
+  value       = aws_s3_bucket.media.bucket
+}
+
+output "media_access_key_id" {
+  description = "Access key ID for Ziyuanqishuo media S3 compatible access."
+  value       = aws_iam_access_key.media.id
+}
+
+output "media_secret_access_key" {
+  description = "Secret access key for Ziyuanqishuo media S3 compatible access."
+  value       = aws_iam_access_key.media.secret
+  sensitive   = true
+}
+
+output "media_s3_endpoint" {
+  description = "S3 endpoint used by the app's MinIO-compatible storage implementation."
+  value       = "https://s3.${var.aws_region}.amazonaws.com"
+}
+
+output "media_public_base_url" {
+  description = "Public base URL for generated media URLs."
+  value       = "https://s3.${var.aws_region}.amazonaws.com/${aws_s3_bucket.media.bucket}"
+}
