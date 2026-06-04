@@ -11,7 +11,7 @@ components:
       pullPolicy: IfNotPresent
     service:
       type: ClusterIP
-      port: 8082
+      port: 8080
     env:
       SPRING_PROFILES_ACTIVE: dev
     resources:
@@ -30,14 +30,14 @@ components:
       pullPolicy: IfNotPresent
     service:
       type: ClusterIP
-      port: 9080
+      port: 8080
     env:
       SPRING_PROFILES_ACTIVE: dev
       MANAGEMENT_AUTH_BYPASS_ENABLED: "true"
       STORAGE_PROVIDER: s3
       S3_REGION: us-east-1
-      S3_BUCKET: REPLACE_WITH_MEDIA_BUCKET
-      S3_PUBLIC_BASE_URL: REPLACE_WITH_MEDIA_PUBLIC_BASE_URL
+      S3_BUCKET: hanzi-media
+      S3_PUBLIC_BASE_URL: https://s3.us-east-1.amazonaws.com/hanzi-media
       S3_PATH_STYLE_ACCESS_ENABLED: "false"
     resources:
       requests:
