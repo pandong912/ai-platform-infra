@@ -6,8 +6,8 @@ components:
     name: ziyuanqishuo-content
     replicaCount: 1
     image:
-      repository: REPLACE_WITH_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/ziyuanqishuo-content
-      tag: content-initial
+      repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/ziyuanqishuo-content
+      tag: content-54d39af
       pullPolicy: IfNotPresent
     service:
       type: ClusterIP
@@ -23,8 +23,8 @@ components:
     name: ziyuanqishuo-management
     replicaCount: 1
     image:
-      repository: REPLACE_WITH_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/ziyuanqishuo-management
-      tag: management-initial
+      repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/ziyuanqishuo-management
+      tag: management-54d39af
       pullPolicy: IfNotPresent
     service:
       type: ClusterIP
