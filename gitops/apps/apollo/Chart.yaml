@@ -1,0 +1,6 @@
+apiVersion: v2
+name: apollo
+description: Production-minimal Apollo Config Center deployment for EKS
+type: application
+version: 0.1.0
+appVersion: "2.2.0"

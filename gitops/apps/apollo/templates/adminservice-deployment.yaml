@@ -1,0 +1,92 @@
+{{- $component := .Values.adminService -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $component.name }}
+  labels:
+    {{- include "apollo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: adminservice
+spec:
+  replicas: {{ $component.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "apollo.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: adminservice
+  template:
+    metadata:
+      labels:
+        {{- include "apollo.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: adminservice
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ include "apollo.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: adminservice
+          image: "{{ include "apollo.image" (dict "root" . "component" $component) }}"
+          imagePullPolicy: {{ $component.image.pullPolicy }}
+          env:
+            {{- include "apollo.commonEnv" (dict "Values" .Values "port" $component.service.port) | nindent 12 }}
+            {{- include "apollo.eurekaEnv" . | nindent 12 }}
+            - name: SPRING_DATASOURCE_URL
+              value: {{ .Values.database.config.url | quote }}
+            - name: SPRING_DATASOURCE_USERNAME
+              value: {{ .Values.database.config.username | quote }}
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.secret.name }}
+                  key: {{ .Values.database.secret.configPasswordKey }}
+            {{- with $component.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ $component.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.livenessPath }}
+              port: http
+            initialDelaySeconds: {{ .Values.probes.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readinessPath }}
+              port: http
+            initialDelaySeconds: {{ .Values.probes.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.failureThreshold }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml $component.resources | nindent 12 }}
+          volumeMounts:
+            - name: logs
+              mountPath: /opt/logs
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: logs
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

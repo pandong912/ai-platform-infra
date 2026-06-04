@@ -1,0 +1,71 @@
+{{- if .Values.configService.autoscaling.enabled -}}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Values.configService.name }}
+  labels:
+    {{- include "apollo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: configservice
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Values.configService.name }}
+  minReplicas: {{ .Values.configService.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.configService.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.configService.autoscaling.targetCPUUtilizationPercentage }}
+---
+{{ end }}
+{{ if .Values.adminService.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Values.adminService.name }}
+  labels:
+    {{- include "apollo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: adminservice
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Values.adminService.name }}
+  minReplicas: {{ .Values.adminService.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.adminService.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.adminService.autoscaling.targetCPUUtilizationPercentage }}
+---
+{{ end }}
+{{ if .Values.portal.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Values.portal.name }}
+  labels:
+    {{- include "apollo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: portal
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Values.portal.name }}
+  minReplicas: {{ .Values.portal.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.portal.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.portal.autoscaling.targetCPUUtilizationPercentage }}
+{{ end }}

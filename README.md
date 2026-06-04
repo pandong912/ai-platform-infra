@@ -24,6 +24,7 @@ infra/live/dev/argocd-bootstrap/  # Argo CD Helm bootstrap and root app
 gitops/clusters/dev/apps/         # Argo CD child Applications
 gitops/platform/                  # Platform Helm wrappers
 gitops/apps/hello-springboot/     # Hello service Helm chart
+gitops/apps/apollo/               # Apollo Config Center Helm chart
 ```
 
 ## Defaults
@@ -185,6 +186,24 @@ Expected response:
 ```text
 hello from spring boot on eks
 ```
+
+## Step 7: Deploy Apollo Config Center
+
+Apollo is registered as an Argo CD child application at:
+
+```text
+gitops/clusters/dev/apps/apollo.yaml
+```
+
+Before syncing it, provision RDS MySQL, initialize `ApolloPortalDB` and
+`ApolloConfigDB`, create the `apollo-db` Secret in the `apollo` namespace, and
+replace the RDS endpoint placeholder in:
+
+```text
+gitops/apps/apollo/values-dev.yaml
+```
+
+See `docs/apollo-minimal-production.md` for the deployment runbook.
 
 ## Cost Cleanup
 

@@ -1,0 +1,47 @@
+{{- if .Values.configService.pdb.enabled -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Values.configService.name }}
+  labels:
+    {{- include "apollo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: configservice
+spec:
+  minAvailable: {{ .Values.configService.pdb.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "apollo.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: configservice
+---
+{{ end }}
+{{ if .Values.adminService.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Values.adminService.name }}
+  labels:
+    {{- include "apollo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: adminservice
+spec:
+  minAvailable: {{ .Values.adminService.pdb.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "apollo.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: adminservice
+---
+{{ end }}
+{{ if .Values.portal.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Values.portal.name }}
+  labels:
+    {{- include "apollo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: portal
+spec:
+  minAvailable: {{ .Values.portal.pdb.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "apollo.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: portal
+{{ end }}

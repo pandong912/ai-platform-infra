@@ -1,0 +1,38 @@
+global:
+  environment: dev
+
+database:
+  secret:
+    create: false
+    name: apollo-db
+  config:
+    url: jdbc:mysql://REPLACE_WITH_APOLLO_RDS_ENDPOINT:3306/ApolloConfigDB?characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai
+    username: apollo
+  portal:
+    url: jdbc:mysql://REPLACE_WITH_APOLLO_RDS_ENDPOINT:3306/ApolloPortalDB?characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai
+    username: apollo
+
+internalDiscovery:
+  mode: kubernetes-service
+  eurekaUrl: http://apollo-configservice.apollo.svc.cluster.local:8080/eureka/
+
+portal:
+  envs: dev
+  meta:
+    dev: http://apollo-configservice.apollo.svc.cluster.local:8080
+
+ingress:
+  portal:
+    enabled: true
+    className: alb
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internal
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+      alb.ingress.kubernetes.io/healthcheck-path: /health
+      alb.ingress.kubernetes.io/success-codes: "200-399"
+    hosts:
+      - host: apollo.dev.internal
+        paths:
+          - path: /
+            pathType: Prefix

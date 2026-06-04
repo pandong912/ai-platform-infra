@@ -1,0 +1,160 @@
+global:
+  imageRegistry: apolloconfig
+  imagePullSecrets: []
+  environment: dev
+  timezone: Asia/Shanghai
+  javaOpts: "-Xms512m -Xmx512m -Duser.timezone=Asia/Shanghai"
+
+database:
+  secret:
+    create: false
+    name: apollo-db
+    configPasswordKey: config-db-password
+    portalPasswordKey: portal-db-password
+    configPassword: CHANGE_ME
+    portalPassword: CHANGE_ME
+  config:
+    url: jdbc:mysql://REPLACE_WITH_RDS_ENDPOINT:3306/ApolloConfigDB?characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai
+    username: apollo
+  portal:
+    url: jdbc:mysql://REPLACE_WITH_RDS_ENDPOINT:3306/ApolloPortalDB?characterEncoding=utf8&useSSL=true&serverTimezone=Asia/Shanghai
+    username: apollo
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+internalDiscovery:
+  mode: kubernetes-service
+  # Apollo still expects an Eureka-compatible endpoint internally. In EKS this is
+  # provided by Apollo Config Service itself and addressed through Kubernetes DNS;
+  # do not deploy a separate Eureka cluster.
+  eurekaUrl: http://apollo-configservice.apollo.svc.cluster.local:8080/eureka/
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+
+configService:
+  name: apollo-configservice
+  replicaCount: 2
+  image:
+    repository: apollo-configservice
+    tag: "2.2.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+  resources:
+    requests:
+      cpu: 250m
+      memory: 768Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 70
+  pdb:
+    enabled: true
+    minAvailable: 1
+  extraEnv: []
+
+adminService:
+  name: apollo-adminservice
+  replicaCount: 2
+  image:
+    repository: apollo-adminservice
+    tag: "2.2.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8090
+  resources:
+    requests:
+      cpu: 250m
+      memory: 768Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 70
+  pdb:
+    enabled: true
+    minAvailable: 1
+  extraEnv: []
+
+portal:
+  name: apollo-portal
+  replicaCount: 2
+  image:
+    repository: apollo-portal
+    tag: "2.2.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8070
+  envs: dev
+  meta:
+    dev: http://apollo-configservice:8080
+  resources:
+    requests:
+      cpu: 250m
+      memory: 768Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 70
+  pdb:
+    enabled: true
+    minAvailable: 1
+  extraEnv: []
+
+ingress:
+  portal:
+    enabled: true
+    className: alb
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internal
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+      alb.ingress.kubernetes.io/healthcheck-path: /health
+      alb.ingress.kubernetes.io/success-codes: "200-399"
+    hosts:
+      - host: apollo.dev.internal
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+
+probes:
+  livenessPath: /health
+  readinessPath: /health
+  initialDelaySeconds: 120
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

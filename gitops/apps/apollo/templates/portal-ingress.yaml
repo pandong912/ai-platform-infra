@@ -1,0 +1,38 @@
+{{- if .Values.ingress.portal.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.portal.name }}
+  labels:
+    {{- include "apollo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: portal
+  {{- with .Values.ingress.portal.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.ingress.portal.className }}
+  ingressClassName: {{ . }}
+  {{- end }}
+  {{- with .Values.ingress.portal.tls }}
+  tls:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  rules:
+    {{- range .Values.ingress.portal.hosts }}
+    - {{- if .host }}
+      host: {{ .host | quote }}
+      {{- end }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ $.Values.portal.name }}
+                port:
+                  number: {{ $.Values.portal.service.port }}
+          {{- end }}
+    {{- end }}
+{{- end }}
