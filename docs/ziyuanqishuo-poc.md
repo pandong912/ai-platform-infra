@@ -27,6 +27,7 @@ Edit:
 ```hcl
 state_bucket_name = "ai-video-platform"
 db_password       = "REPLACE_WITH_STRONG_PASSWORD"
+media_bucket_name = "REPLACE_WITH_GLOBALLY_UNIQUE_MEDIA_BUCKET"
 ```
 
 Apply:
@@ -43,6 +44,10 @@ Collect:
 tofu output -raw db_endpoint
 tofu output -raw github_ci_role_arn
 tofu output repository_urls
+tofu output -raw media_bucket_name
+tofu output -raw media_access_key_id
+tofu output -raw media_secret_access_key
+tofu output -raw media_public_base_url
 ```
 
 ## 2. Configure GitHub Actions
@@ -77,10 +82,16 @@ kubectl create namespace ziyuanqishuo --dry-run=client -o yaml | kubectl apply -
 kubectl -n ziyuanqishuo create secret generic ziyuanqishuo-db \
   --from-literal=DB_URL='jdbc:postgresql://<RDS_ENDPOINT>:5432/ziyuanqishuo' \
   --from-literal=DB_USERNAME='ziyuanqishuo' \
-  --from-literal=DB_PASSWORD='<DB_PASSWORD>'
+  --from-literal=DB_PASSWORD='<DB_PASSWORD>' \
+  --from-literal=JWT_SECRET='<REPLACE_WITH_LONG_RANDOM_SECRET>' \
+  --from-literal=S3_ACCESS_KEY='<MEDIA_ACCESS_KEY_ID>' \
+  --from-literal=S3_SECRET_KEY='<MEDIA_SECRET_ACCESS_KEY>'
 ```
 
-Production should migrate this to AWS Secrets Manager and External Secrets.
+The application uses the dedicated `S3StorageService` in the dev profile.
+Non-sensitive S3 settings are provided by Helm values, while access keys are stored in this secret.
+
+Production should migrate this secret to AWS Secrets Manager and External Secrets.
 
 ## 4. Run DB Migration Manually
 
@@ -118,6 +129,8 @@ Replace:
 
 ```text
 REPLACE_WITH_ACCOUNT_ID
+REPLACE_WITH_MEDIA_BUCKET
+REPLACE_WITH_MEDIA_PUBLIC_BASE_URL
 ```
 
 or wait for the `ziyuanqishuo` CI workflow to update the image repositories and
@@ -187,6 +200,6 @@ http://<KONG_ALB>/hanzi/management/swagger-ui.html
 ## Notes
 
 - The management module currently has auth bypass enabled in the PoC.
-- Media storage defaults are not production-ready. Configure S3/OSS before real use.
+- Media storage uses AWS S3 through the dedicated `S3StorageService`.
 - DB migration is manual in this phase. Revisit automated migrations when you introduce staging/prod approval gates.
 - The chart strips `/hanzi/content` and `/hanzi/management` prefixes before forwarding to services.

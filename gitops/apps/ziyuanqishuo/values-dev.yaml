@@ -12,6 +12,8 @@ components:
     service:
       type: ClusterIP
       port: 8082
+    env:
+      SPRING_PROFILES_ACTIVE: dev
     resources:
       requests:
         cpu: 100m
@@ -30,8 +32,13 @@ components:
       type: ClusterIP
       port: 9080
     env:
+      SPRING_PROFILES_ACTIVE: dev
       MANAGEMENT_AUTH_BYPASS_ENABLED: "true"
-      STORAGE_PROVIDER: minio
+      STORAGE_PROVIDER: s3
+      S3_REGION: us-east-1
+      S3_BUCKET: REPLACE_WITH_MEDIA_BUCKET
+      S3_PUBLIC_BASE_URL: REPLACE_WITH_MEDIA_PUBLIC_BASE_URL
+      S3_PATH_STYLE_ACCESS_ENABLED: "false"
     resources:
       requests:
         cpu: 100m

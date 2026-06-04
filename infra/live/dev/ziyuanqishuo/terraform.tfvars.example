@@ -15,13 +15,8 @@ db_instance_class    = "db.t4g.micro"
 db_allocated_storage = 20
 db_engine_version    = "16.6"
 
-# Temporary public RDS access for development only.
-# Keep false by default. If enabled, only narrow /32 CIDRs are allowed.
-enable_public_db_access = false
-allowed_db_client_cidrs = [
-  "103.167.26.54/32",
-  "210.12.12.8/32",
-]
+media_bucket_name    = "REPLACE_WITH_GLOBALLY_UNIQUE_MEDIA_BUCKET"
+media_iam_user_name  = "ziyuanqishuo-dev-media"
 
 github_owner  = "xiongtao00"
 github_repo   = "ziyuanqishuo"
