@@ -11,9 +11,8 @@ Services:
 - `hanzi-content-system`
 - `hanzi-management-system`
 
-The database migration module runs as an Argo CD PreSync Job:
-
-- `hanzi-db-migration`
+Database migration is intentionally manual in this PoC. It is not part of the
+automated Argo CD deployment flow.
 
 ## 1. Create AWS Dependencies
 
@@ -83,7 +82,30 @@ kubectl -n ziyuanqishuo create secret generic ziyuanqishuo-db \
 
 Production should migrate this to AWS Secrets Manager and External Secrets.
 
-## 4. Replace GitOps Image Placeholders
+## 4. Run DB Migration Manually
+
+After the database is reachable through the temporary DB tunnel, run Flyway from
+your local machine:
+
+```bash
+cd /Users/pandong/IdeaProjects/ziyuanqishuo/ziyuanqishuo-backend
+
+DB_URL='jdbc:postgresql://<DB_TUNNEL_OR_RDS_HOST>:5432/ziyuanqishuo' \
+DB_USERNAME='ziyuanqishuo' \
+DB_PASSWORD='<DB_PASSWORD>' \
+mvn -pl hanzi-db-migration spring-boot:run
+```
+
+You can also run migration SQL manually in DataGrip if you need to inspect or
+control each step. Apply files under:
+
+```text
+hanzi-db-migration/src/main/resources/db/migration
+```
+
+in version order.
+
+## 5. Replace GitOps Image Placeholders
 
 Edit:
 
@@ -101,7 +123,7 @@ REPLACE_WITH_ACCOUNT_ID
 or wait for the `ziyuanqishuo` CI workflow to update the image repositories and
 tags automatically.
 
-## 5. Commit GitOps App
+## 6. Commit GitOps App
 
 ```bash
 git checkout -b add-ziyuanqishuo-poc
@@ -115,7 +137,7 @@ git push origin add-ziyuanqishuo-poc
 
 Open a PR and merge into `master`.
 
-## 6. Build and Deploy Images
+## 7. Build and Deploy Images
 
 Merge the `ziyuanqishuo` repo workflow changes to `main`.
 
@@ -124,19 +146,17 @@ The workflow builds and pushes:
 ```text
 ziyuanqishuo-content:content-<sha>
 ziyuanqishuo-management:management-<sha>
-ziyuanqishuo-db-migration:migration-<sha>
 ```
 
 It then creates a GitOps PR in `ai-platform-infra`.
 
 Merge the generated GitOps PR.
 
-## 7. Verify
+## 8. Verify
 
 ```bash
 kubectl get applications -n argocd | grep ziyuanqishuo
 kubectl get pods -n ziyuanqishuo
-kubectl get jobs -n ziyuanqishuo
 ```
 
 Get Kong ALB:
@@ -168,5 +188,5 @@ http://<KONG_ALB>/hanzi/management/swagger-ui.html
 
 - The management module currently has auth bypass enabled in the PoC.
 - Media storage defaults are not production-ready. Configure S3/OSS before real use.
-- DB migration runs as a PreSync hook before app rollout.
+- DB migration is manual in this phase. Revisit automated migrations when you introduce staging/prod approval gates.
 - The chart strips `/hanzi/content` and `/hanzi/management` prefixes before forwarding to services.

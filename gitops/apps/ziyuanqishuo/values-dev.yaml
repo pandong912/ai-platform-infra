@@ -2,11 +2,6 @@ database:
   secretName: ziyuanqishuo-db
 
 components:
-  migration:
-    image:
-      repository: REPLACE_WITH_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/ziyuanqishuo-db-migration
-      tag: migration-initial
-      pullPolicy: IfNotPresent
   content:
     name: ziyuanqishuo-content
     replicaCount: 1
