@@ -65,8 +65,24 @@ securityContext:
   readOnlyRootFilesystem: true
 
 probes:
-  livenessPath: /actuator/health/liveness
-  readinessPath: /actuator/health/readiness
+  startup:
+    enabled: true
+    path: /actuator/health/liveness
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 30
+  liveness:
+    path: /actuator/health/liveness
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+  readiness:
+    path: /actuator/health/readiness
+    initialDelaySeconds: 0
+    periodSeconds: 5
+    timeoutSeconds: 5
+    failureThreshold: 12
 
 kong:
   ingress:
