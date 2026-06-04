@@ -1,0 +1,34 @@
+replicaCount: 1
+
+image:
+  repository: alpine/socat
+  tag: latest
+  pullPolicy: IfNotPresent
+
+tunnel:
+  listenPort: 5432
+  targetHost: ziyuanqishuo-dev.c8l6oosuk0q6.us-east-1.rds.amazonaws.com
+  targetPort: 5432
+
+service:
+  type: LoadBalancer
+  port: 5432
+  loadBalancerSourceRanges:
+    - 103.167.26.54/32
+    - 210.12.12.8/32
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+
+resources:
+  requests:
+    cpu: 25m
+    memory: 32Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

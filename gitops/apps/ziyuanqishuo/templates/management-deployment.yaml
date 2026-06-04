@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.components.management.name }}
+  labels:
+    {{- include "ziyuanqishuo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: management
+spec:
+  replicas: {{ .Values.components.management.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ziyuanqishuo.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: management
+  template:
+    metadata:
+      labels:
+        {{- include "ziyuanqishuo.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: management
+    spec:
+      serviceAccountName: {{ include "ziyuanqishuo.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: management
+          image: "{{ .Values.components.management.image.repository }}:{{ .Values.components.management.image.tag }}"
+          imagePullPolicy: {{ .Values.components.management.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.database.secretName }}
+          env:
+            {{- range $name, $value := .Values.components.management.env }}
+            - name: {{ $name }}
+              value: {{ $value | quote }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.components.management.service.port }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.livenessPath }}
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readinessPath }}
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.components.management.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

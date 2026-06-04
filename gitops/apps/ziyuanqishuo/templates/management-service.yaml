@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.components.management.name }}
+  labels:
+    {{- include "ziyuanqishuo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: management
+spec:
+  type: {{ .Values.components.management.service.type }}
+  ports:
+    - name: http
+      port: {{ .Values.components.management.service.port }}
+      targetPort: http
+  selector:
+    {{- include "ziyuanqishuo.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: management
