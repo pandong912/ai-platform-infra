@@ -30,9 +30,8 @@ kong:
   ingress:
     enabled: false
     className: kong
-    corePath: /logto
-    adminPath: /logto-admin
-    pathType: Prefix
+    coreHost: logto.example.com
+    adminHost: admin.logto.example.com
 
 resources:
   requests:

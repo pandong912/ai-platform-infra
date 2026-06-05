@@ -111,7 +111,10 @@ The core endpoint is:
 http://localhost:3001
 ```
 
-## 6. Optional HTTP ALB
+## 6. Optional Public Access Through Kong
+
+The dev default is local access through `kubectl port-forward`. Keep it this
+way until you have real DNS hostnames.
 
 After you have two stable hostnames, update:
 
@@ -126,17 +129,18 @@ logto:
   endpoint: http://logto.example.com
   adminEndpoint: http://admin.logto.example.com
 
-ingress:
-  enabled: true
-  coreHost: logto.example.com
-  adminHost: admin.logto.example.com
+kong:
+  ingress:
+    enabled: true
+    coreHost: logto.example.com
+    adminHost: admin.logto.example.com
 ```
 
-Commit and merge the GitOps change. Then create DNS CNAME records to the ALB
-hostname from:
+Commit and merge the GitOps change. Then create DNS CNAME records to the Kong
+ALB hostname from:
 
 ```bash
-kubectl get ingress -n logto
+kubectl get ingress -n kong kong-alb
 ```
 
 ## 7. Cleanup
