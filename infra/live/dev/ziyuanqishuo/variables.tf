@@ -108,6 +108,7 @@ variable "deploy_branch" {
 variable "media_bucket_name" {
   description = "Globally unique S3 bucket name for Ziyuanqishuo media resources."
   type        = string
+  default     = "ziyuanqishuo-hanzi-dev"
 }
 
 variable "media_iam_user_name" {
@@ -115,3 +116,16 @@ variable "media_iam_user_name" {
   type        = string
   default     = "ziyuanqishuo-dev-media"
 }
+
+variable "content_cache_redis_cluster_id" {
+  description = "ElastiCache Redis cluster ID for hanzi-content L2 cache."
+  type        = string
+  default     = "ziyuanqishuo-content-cache-dev"
+}
+
+variable "content_cache_redis_node_type" {
+  description = "ElastiCache Redis node type for hanzi-content L2 cache."
+  type        = string
+  default     = "cache.t4g.micro"
+}
+

@@ -32,7 +32,7 @@ output "github_ci_role_arn" {
 }
 
 output "media_bucket_name" {
-  description = "S3 bucket name for Ziyuanqishuo media resources."
+  description = "Unified S3 bucket name for Ziyuanqishuo media resources and hanzi-content JSON cache."
   value       = aws_s3_bucket.media.bucket
 }
 
@@ -55,4 +55,24 @@ output "media_s3_endpoint" {
 output "media_public_base_url" {
   description = "Public base URL for generated media URLs."
   value       = "https://s3.${var.aws_region}.amazonaws.com/${aws_s3_bucket.media.bucket}"
+}
+
+output "content_cache_redis_endpoint" {
+  description = "ElastiCache Redis endpoint for hanzi-content L2 cache."
+  value       = aws_elasticache_cluster.content_cache.cache_nodes[0].address
+}
+
+output "content_cache_redis_port" {
+  description = "ElastiCache Redis port for hanzi-content L2 cache."
+  value       = aws_elasticache_cluster.content_cache.port
+}
+
+output "content_json_bucket_name" {
+  description = "Unified S3 bucket name for hanzi-content JSON cache."
+  value       = aws_s3_bucket.media.bucket
+}
+
+output "content_json_s3_endpoint" {
+  description = "S3 endpoint for hanzi-content JSON cache."
+  value       = "https://s3.${var.aws_region}.amazonaws.com"
 }

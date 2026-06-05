@@ -15,8 +15,11 @@ db_instance_class    = "db.t4g.micro"
 db_allocated_storage = 20
 db_engine_version    = "16.6"
 
-media_bucket_name    = "REPLACE_WITH_GLOBALLY_UNIQUE_MEDIA_BUCKET"
+media_bucket_name    = "ziyuanqishuo-hanzi-dev"
 media_iam_user_name  = "ziyuanqishuo-dev-media"
+
+content_cache_redis_cluster_id = "ziyuanqishuo-content-cache-dev"
+content_cache_redis_node_type  = "cache.t4g.micro"
 
 github_owner  = "xiongtao00"
 github_repo   = "ziyuanqishuo"
