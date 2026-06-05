@@ -2,9 +2,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ziyuanqishuo-kong
+  name: {{ include "ziyuanqishuo-frontend.name" . }}
   labels:
-    {{- include "ziyuanqishuo.labels" . | nindent 4 }}
+    {{- include "ziyuanqishuo-frontend.labels" . | nindent 4 }}
   annotations:
     konghq.com/strip-path: "true"
 spec:
@@ -12,11 +12,11 @@ spec:
   rules:
     - http:
         paths:
-          - path: {{ .Values.kong.ingress.explorationPath }}
+          - path: {{ .Values.kong.ingress.path }}
             pathType: {{ .Values.kong.ingress.pathType }}
             backend:
               service:
-                name: {{ .Values.components.exploration.name }}
+                name: {{ include "ziyuanqishuo-frontend.name" . }}
                 port:
-                  number: {{ .Values.components.exploration.service.port }}
+                  number: {{ .Values.service.port }}
 {{- end }}
