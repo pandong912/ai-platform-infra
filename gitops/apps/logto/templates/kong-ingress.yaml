@@ -1,0 +1,29 @@
+{{- if .Values.kong.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "logto.fullname" . }}-kong
+  labels:
+    {{- include "logto.labels" . | nindent 4 }}
+  annotations:
+    konghq.com/strip-path: "true"
+spec:
+  ingressClassName: {{ .Values.kong.ingress.className }}
+  rules:
+    - http:
+        paths:
+          - path: {{ .Values.kong.ingress.corePath }}
+            pathType: {{ .Values.kong.ingress.pathType }}
+            backend:
+              service:
+                name: {{ include "logto.fullname" . }}
+                port:
+                  name: core
+          - path: {{ .Values.kong.ingress.adminPath }}
+            pathType: {{ .Values.kong.ingress.pathType }}
+            backend:
+              service:
+                name: {{ include "logto.fullname" . }}
+                port:
+                  name: admin
+{{- end }}

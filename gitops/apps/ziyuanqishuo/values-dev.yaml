@@ -66,6 +66,11 @@ components:
     env:
       SPRING_PROFILES_ACTIVE: dev
       CONTENT_SERVICE_BASE_URL: http://ziyuanqishuo-content.ziyuanqishuo.svc.cluster.local:8080
+      LEGACY_AUTH_ENABLED: "true"
+      OIDC_RESOURCE_SERVER_ENABLED: "false"
+      OIDC_ISSUER_URI: http://k8s-kong-kongalb-d47fba56e3-58647003.us-east-1.elb.amazonaws.com/logto/oidc
+      OIDC_AUDIENCE: https://api.ziyuanqishuo.dev
+      OIDC_PRINCIPAL_CLAIM: sub
       SPRINGDOC_SWAGGER_UI_CONFIG_URL: /hanzi/exploration/v3/api-docs/swagger-config
       SPRINGDOC_SWAGGER_UI_URL: /hanzi/exploration/v3/api-docs
     resources:

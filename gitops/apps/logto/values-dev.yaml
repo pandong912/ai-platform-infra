@@ -6,8 +6,8 @@ image:
   pullPolicy: IfNotPresent
 
 logto:
-  endpoint: http://localhost:3001
-  adminEndpoint: http://localhost:3002
+  endpoint: http://k8s-kong-kongalb-d47fba56e3-58647003.us-east-1.elb.amazonaws.com/logto
+  adminEndpoint: http://k8s-kong-kongalb-d47fba56e3-58647003.us-east-1.elb.amazonaws.com/logto-admin
   trustProxyHeader: "1"
   secretName: logto-env
 
@@ -25,6 +25,14 @@ ingress:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
   coreHost: logto.example.com
   adminHost: admin.logto.example.com
+
+kong:
+  ingress:
+    enabled: true
+    className: kong
+    corePath: /logto
+    adminPath: /logto-admin
+    pathType: Prefix
 
 resources:
   requests:
