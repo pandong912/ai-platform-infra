@@ -26,6 +26,14 @@ ingress:
   coreHost: logto.example.com
   adminHost: admin.logto.example.com
 
+kong:
+  ingress:
+    enabled: false
+    className: kong
+    corePath: /logto
+    adminPath: /logto-admin
+    pathType: Prefix
+
 resources:
   requests:
     cpu: 250m
