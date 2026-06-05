@@ -169,6 +169,45 @@ resource "aws_security_group" "postgres" {
   vpc_id      = data.terraform_remote_state.network.outputs.vpc_id
 }
 
+resource "aws_elasticache_subnet_group" "content_cache" {
+  name       = "${var.content_cache_redis_cluster_id}-subnets"
+  subnet_ids = data.terraform_remote_state.network.outputs.private_subnet_ids
+}
+
+resource "aws_security_group" "content_cache_redis" {
+  name        = "${var.content_cache_redis_cluster_id}-redis"
+  description = "Allow Redis access to Ziyuanqishuo content cache from EKS nodes"
+  vpc_id      = data.terraform_remote_state.network.outputs.vpc_id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "content_cache_redis_from_eks_nodes" {
+  security_group_id            = aws_security_group.content_cache_redis.id
+  referenced_security_group_id = data.terraform_remote_state.eks.outputs.node_security_group_id
+  ip_protocol                  = "tcp"
+  from_port                    = 6379
+  to_port                      = 6379
+  description                  = "Redis from EKS worker nodes"
+}
+
+resource "aws_vpc_security_group_egress_rule" "content_cache_redis_all_egress" {
+  security_group_id = aws_security_group.content_cache_redis.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1"
+  description       = "Allow all egress"
+}
+
+resource "aws_elasticache_cluster" "content_cache" {
+  cluster_id           = var.content_cache_redis_cluster_id
+  engine               = "redis"
+  engine_version       = "7.1"
+  node_type            = var.content_cache_redis_node_type
+  num_cache_nodes      = 1
+  parameter_group_name = "default.redis7"
+  port                 = 6379
+  subnet_group_name    = aws_elasticache_subnet_group.content_cache.name
+  security_group_ids   = [aws_security_group.content_cache_redis.id]
+}
+
 resource "aws_vpc_security_group_ingress_rule" "postgres_from_eks_nodes" {
   security_group_id            = aws_security_group.postgres.id
   referenced_security_group_id = data.terraform_remote_state.eks.outputs.node_security_group_id

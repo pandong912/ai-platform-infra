@@ -14,6 +14,13 @@ components:
       port: 8080
     env:
       SPRING_PROFILES_ACTIVE: dev
+      HANZI_CONTENT_REDIS_CACHE_ENABLED: "true"
+      SPRING_DATA_REDIS_HOST: "ziyuanqishuo-content-cache-dev.n266kv.0001.use1.cache.amazonaws.com"
+      SPRING_DATA_REDIS_PORT: "6379"
+      HANZI_CONTENT_S3_JSON_ENABLED: "true"
+      HANZI_CONTENT_S3_JSON_BUCKET: ziyuanqishuo-hanzi-dev
+      HANZI_CONTENT_S3_JSON_REGION: us-east-1
+      HANZI_CONTENT_S3_JSON_PREFIX: hanzi/content/v1
     resources:
       requests:
         cpu: 100m
@@ -36,8 +43,8 @@ components:
       MANAGEMENT_AUTH_BYPASS_ENABLED: "true"
       STORAGE_PROVIDER: s3
       S3_REGION: us-east-1
-      S3_BUCKET: hanzi-media
-      S3_PUBLIC_BASE_URL: https://s3.us-east-1.amazonaws.com/hanzi-media
+      S3_BUCKET: ziyuanqishuo-hanzi-dev
+      S3_PUBLIC_BASE_URL: https://s3.us-east-1.amazonaws.com/ziyuanqishuo-hanzi-dev
       S3_PATH_STYLE_ACCESS_ENABLED: "false"
     resources:
       requests:
