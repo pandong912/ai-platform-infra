@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.components.exploration.name }}
+  labels:
+    {{- include "ziyuanqishuo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: exploration
+spec:
+  replicas: {{ .Values.components.exploration.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ziyuanqishuo.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: exploration
+  template:
+    metadata:
+      labels:
+        {{- include "ziyuanqishuo.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: exploration
+    spec:
+      serviceAccountName: {{ include "ziyuanqishuo.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: exploration
+          image: "{{ .Values.components.exploration.image.repository }}:{{ .Values.components.exploration.image.tag }}"
+          imagePullPolicy: {{ .Values.components.exploration.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.database.secretName }}
+          env:
+            {{- range $name, $value := .Values.components.exploration.env }}
+            - name: {{ $name }}
+              value: {{ $value | quote }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.components.exploration.service.port }}
+          {{- if .Values.probes.startup.enabled }}
+          startupProbe:
+            httpGet:
+              path: {{ .Values.probes.startup.path }}
+              port: http
+            periodSeconds: {{ .Values.probes.startup.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.startup.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.startup.failureThreshold }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.liveness.path }}
+              port: http
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readiness.path }}
+              port: http
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.components.exploration.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

@@ -10,6 +10,8 @@ locals {
   repositories = toset([
     "ziyuanqishuo-content",
     "ziyuanqishuo-management",
+    "ziyuanqishuo-exploration",
+    "ziyuanqishuo-frontend",
     "ziyuanqishuo-db-migration",
   ])
 }

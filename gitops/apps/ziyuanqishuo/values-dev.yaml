@@ -14,8 +14,6 @@ components:
       port: 8080
     env:
       SPRING_PROFILES_ACTIVE: dev
-      SPRINGDOC_SWAGGER_UI_CONFIG_URL: /hanzi/content/v3/api-docs/swagger-config
-      SPRINGDOC_SWAGGER_UI_URL: /hanzi/content/v3/api-docs
     resources:
       requests:
         cpu: 100m
@@ -41,8 +39,28 @@ components:
       S3_BUCKET: hanzi-media
       S3_PUBLIC_BASE_URL: https://s3.us-east-1.amazonaws.com/hanzi-media
       S3_PATH_STYLE_ACCESS_ENABLED: "false"
-      SPRINGDOC_SWAGGER_UI_CONFIG_URL: /hanzi/management/v3/api-docs/swagger-config
-      SPRINGDOC_SWAGGER_UI_URL: /hanzi/management/v3/api-docs
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+  exploration:
+    name: ziyuanqishuo-exploration
+    replicaCount: 1
+    image:
+      repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/ziyuanqishuo-exploration
+      tag: exploration-initial
+      pullPolicy: IfNotPresent
+    service:
+      type: ClusterIP
+      port: 8080
+    env:
+      SPRING_PROFILES_ACTIVE: dev
+      CONTENT_SERVICE_BASE_URL: http://ziyuanqishuo-content.ziyuanqishuo.svc.cluster.local:8080
+      SPRINGDOC_SWAGGER_UI_CONFIG_URL: /hanzi/exploration/v3/api-docs/swagger-config
+      SPRINGDOC_SWAGGER_UI_URL: /hanzi/exploration/v3/api-docs
     resources:
       requests:
         cpu: 100m
@@ -92,8 +110,7 @@ kong:
   ingress:
     enabled: true
     className: kong
-    contentPath: /hanzi/content
-    managementPath: /hanzi/management
+    explorationPath: /hanzi/exploration
     pathType: Prefix
 
 nodeSelector: {}
