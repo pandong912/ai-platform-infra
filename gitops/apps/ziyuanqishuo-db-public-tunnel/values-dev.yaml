@@ -15,7 +15,9 @@ service:
   port: 5432
   loadBalancerSourceRanges:
     - 103.167.26.52/32
+    - 103.167.26.54/32
     - 210.12.12.8/32
+    - 112.32.28.50/32
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-type: external
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
