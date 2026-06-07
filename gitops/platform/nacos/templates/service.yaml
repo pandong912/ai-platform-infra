@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nacos.fullname" . }}
+  labels:
+    {{- include "nacos.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    {{- include "nacos.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.service.httpPort }}
+      targetPort: http
+      protocol: TCP
+    - name: client-grpc
+      port: {{ .Values.service.clientGrpcPort }}
+      targetPort: client-grpc
+      protocol: TCP
+    - name: raft-grpc
+      port: {{ .Values.service.raftGrpcPort }}
+      targetPort: raft-grpc
+      protocol: TCP

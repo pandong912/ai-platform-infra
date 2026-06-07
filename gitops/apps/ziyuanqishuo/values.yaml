@@ -44,7 +44,8 @@ components:
       STORAGE_PROVIDER: s3
       S3_REGION: us-east-1
       S3_BUCKET: ziyuanqishuo-hanzi-dev
-      S3_PUBLIC_BASE_URL: https://s3.us-east-1.amazonaws.com/ziyuanqishuo-hanzi-dev
+      # Replace with `tofu output -raw media_public_base_url` from infra/live/dev/ziyuanqishuo after apply.
+      S3_PUBLIC_BASE_URL: https://REPLACE_WITH_HANZI_MEDIA_CDN_DOMAIN
       S3_PATH_STYLE_ACCESS_ENABLED: "false"
     resources:
       requests:

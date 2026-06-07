@@ -17,6 +17,9 @@ db_engine_version    = "16.6"
 
 media_bucket_name    = "ziyuanqishuo-hanzi-dev"
 media_iam_user_name  = "ziyuanqishuo-dev-media"
+media_cdn_enabled    = true
+media_cdn_price_class = "PriceClass_100"
+media_cdn_comment    = "Dedicated CDN for Ziyuanqishuo Hanzi media"
 
 content_cache_redis_cluster_id = "ziyuanqishuo-content-cache-dev"
 content_cache_redis_node_type  = "cache.t4g.micro"

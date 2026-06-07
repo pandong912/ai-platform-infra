@@ -14,9 +14,15 @@ locals {
     "ziyuanqishuo-frontend",
     "ziyuanqishuo-db-migration",
   ])
+
+  media_origin_id = "ziyuanqishuo-media-s3"
 }
 
 data "aws_caller_identity" "current" {}
+
+data "aws_cloudfront_cache_policy" "media_caching_optimized" {
+  name = "Managed-CachingOptimized"
+}
 
 data "terraform_remote_state" "network" {
   backend = "s3"
@@ -108,6 +114,80 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "media" {
       sse_algorithm = "AES256"
     }
   }
+}
+
+resource "aws_cloudfront_origin_access_control" "media" {
+  name                              = "${var.project}-${var.environment}-ziyuanqishuo-media"
+  description                       = "Allow the Hanzi media CDN to read private S3 objects."
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
+resource "aws_cloudfront_distribution" "media" {
+  enabled         = var.media_cdn_enabled
+  is_ipv6_enabled = true
+  comment         = var.media_cdn_comment
+  price_class     = var.media_cdn_price_class
+
+  origin {
+    domain_name              = aws_s3_bucket.media.bucket_regional_domain_name
+    origin_id                = local.media_origin_id
+    origin_access_control_id = aws_cloudfront_origin_access_control.media.id
+  }
+
+  default_cache_behavior {
+    target_origin_id       = local.media_origin_id
+    viewer_protocol_policy = "redirect-to-https"
+
+    allowed_methods = ["GET", "HEAD", "OPTIONS"]
+    cached_methods  = ["GET", "HEAD", "OPTIONS"]
+
+    cache_policy_id = data.aws_cloudfront_cache_policy.media_caching_optimized.id
+    compress        = true
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = true
+    minimum_protocol_version       = "TLSv1"
+  }
+}
+
+data "aws_iam_policy_document" "media_bucket" {
+  statement {
+    sid    = "AllowHanziMediaCloudFrontRead"
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
+    }
+
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "${aws_s3_bucket.media.arn}/hanzi/media/*",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values   = [aws_cloudfront_distribution.media.arn]
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "media_cloudfront" {
+  bucket = aws_s3_bucket.media.id
+  policy = data.aws_iam_policy_document.media_bucket.json
 }
 
 resource "aws_iam_user" "media" {

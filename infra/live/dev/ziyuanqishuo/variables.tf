@@ -117,6 +117,24 @@ variable "media_iam_user_name" {
   default     = "ziyuanqishuo-dev-media"
 }
 
+variable "media_cdn_enabled" {
+  description = "Whether the dedicated Hanzi media CloudFront distribution is enabled."
+  type        = bool
+  default     = true
+}
+
+variable "media_cdn_price_class" {
+  description = "CloudFront price class for the dedicated Hanzi media CDN."
+  type        = string
+  default     = "PriceClass_100"
+}
+
+variable "media_cdn_comment" {
+  description = "CloudFront distribution comment for the dedicated Hanzi media CDN."
+  type        = string
+  default     = "Dedicated CDN for Ziyuanqishuo Hanzi media"
+}
+
 variable "content_cache_redis_cluster_id" {
   description = "ElastiCache Redis cluster ID for hanzi-content L2 cache."
   type        = string

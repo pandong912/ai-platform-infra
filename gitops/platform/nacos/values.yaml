@@ -1,0 +1,67 @@
+replicaCount: 1
+
+image:
+  repository: nacos/nacos-server
+  tag: v2.3.2
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  httpPort: 8848
+  clientGrpcPort: 9848
+  raftGrpcPort: 9849
+
+env:
+  MODE: standalone
+  PREFER_HOST_MODE: hostname
+  SPRING_DATASOURCE_PLATFORM: mysql
+  MYSQL_DATABASE_NUM: "1"
+  NACOS_AUTH_ENABLE: "true"
+  JVM_XMS: 256m
+  JVM_XMX: 512m
+  JVM_XMN: 128m
+
+externalSecret:
+  enabled: true
+  refreshInterval: 1h
+  secretStoreName: aws-secrets-manager
+  secretName: nacos-env
+  remoteKey: ai-video-platform/dev/nacos
+
+secretEnv:
+  enabled: true
+  secretName: nacos-env
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi
+
+probes:
+  startup:
+    failureThreshold: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+  readiness:
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+  liveness:
+    periodSeconds: 20
+    timeoutSeconds: 5
+    failureThreshold: 6
+
+kong:
+  ingress:
+    enabled: true
+    className: kong
+    host: nacos.example.com
+    path: /nacos
+    pathType: Prefix
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
