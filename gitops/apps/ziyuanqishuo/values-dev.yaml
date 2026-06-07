@@ -7,7 +7,7 @@ components:
     replicaCount: 1
     image:
       repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/ziyuanqishuo-content
-      tag: content-d8235e3
+      tag: content-6c8d9b6
       pullPolicy: IfNotPresent
     service:
       type: ClusterIP
@@ -33,7 +33,7 @@ components:
     replicaCount: 1
     image:
       repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/ziyuanqishuo-management
-      tag: management-d8235e3
+      tag: management-6c8d9b6
       pullPolicy: IfNotPresent
     service:
       type: ClusterIP
@@ -58,7 +58,7 @@ components:
     replicaCount: 1
     image:
       repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/ziyuanqishuo-exploration
-      tag: exploration-d8235e3
+      tag: exploration-6c8d9b6
       pullPolicy: IfNotPresent
     service:
       type: ClusterIP
