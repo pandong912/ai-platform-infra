@@ -5,7 +5,7 @@ difyAccess:
 dify:
   global:
     edition: SELF_HOSTED
-    appSecretKey: nYUaAJ1QPkLD3ug7N1IoxY7M0S0xjO6v4TJ9Ii5HbvpR6Md1M0yKM3UN
+    appSecretKey: ""
     consoleApiDomain: ""
     consoleWebDomain: ""
     serviceApiDomain: ""
@@ -25,7 +25,7 @@ dify:
   externalPostgres:
     enabled: true
     username: dify
-    password: y6BZMpq6k
+    password: ""
     address: ai-video-dify-dev.c8l6oosuk0q6.us-east-1.rds.amazonaws.com
     port: 5432
     database:
@@ -58,12 +58,28 @@ dify:
   externalPgvector:
     enabled: true
     username: dify
-    password: y6BZMpq6k
+    password: ""
     address: ai-video-dify-dev.c8l6oosuk0q6.us-east-1.rds.amazonaws.com
     port: 5432
     dbName: dify
 
   api:
+    extraEnv:
+      - name: SECRET_KEY
+        valueFrom:
+          secretKeyRef:
+            name: dify-env
+            key: SECRET_KEY
+      - name: DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: dify-env
+            key: DB_PASSWORD
+      - name: PGVECTOR_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: dify-env
+            key: DB_PASSWORD
     serviceAccount:
       create: false
       name: dify-s3-access
@@ -79,6 +95,22 @@ dify:
         memory: 1Gi
 
   worker:
+    extraEnv:
+      - name: SECRET_KEY
+        valueFrom:
+          secretKeyRef:
+            name: dify-env
+            key: SECRET_KEY
+      - name: DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: dify-env
+            key: DB_PASSWORD
+      - name: PGVECTOR_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: dify-env
+            key: DB_PASSWORD
     serviceAccount:
       create: false
       name: dify-s3-access
@@ -92,6 +124,12 @@ dify:
         memory: 1Gi
 
   pluginDaemon:
+    extraEnv:
+      - name: DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: dify-env
+            key: DB_PASSWORD
     serviceAccount:
       create: false
       name: dify-s3-access

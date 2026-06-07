@@ -68,15 +68,22 @@ Open:
 http://localhost:3000
 ```
 
-PoC credentials:
+Read the Grafana admin password from the Kubernetes Secret:
+
+```bash
+kubectl -n monitoring get secret kube-prometheus-stack-grafana \
+  -o jsonpath='{.data.admin-password}' | base64 --decode; echo
+```
+
+Credentials:
 
 ```text
 username: admin
-password: admin123
+password: <secret output>
 ```
 
-For production, move the Grafana admin password to AWS Secrets Manager and
-External Secrets.
+For production, keep the Grafana admin password in AWS Secrets Manager and
+sync it through External Secrets.
 
 ## 5. Check Prometheus Targets
 
