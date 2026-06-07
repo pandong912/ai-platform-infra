@@ -1,0 +1,10 @@
+aws_region  = "us-east-1"
+project     = "ai-video-platform"
+environment = "dev"
+owner       = "platform"
+
+origin_domain_name = "k8s-kong-kongalb-d47fba56e3-58647003.us-east-1.elb.amazonaws.com"
+
+price_class = "PriceClass_100"
+comment     = "Dev HTTPS entry for Kong ALB"
+enabled     = true

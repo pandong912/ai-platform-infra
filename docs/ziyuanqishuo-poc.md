@@ -48,6 +48,24 @@ tofu output -raw media_bucket_name
 tofu output -raw media_access_key_id
 tofu output -raw media_secret_access_key
 tofu output -raw media_public_base_url
+tofu output -raw media_cdn_domain_name
+```
+
+Media objects stay private in S3. Browser-readable media URLs are served by the
+dedicated Hanzi media CloudFront distribution created in this module. Use
+`media_public_base_url` as the management service `S3_PUBLIC_BASE_URL`.
+
+Uploaded asset URLs are stored as:
+
+```text
+<media_public_base_url>/hanzi/media/<hanzi-id>/<type>/<yyyy>/<MM>/<dd>/raw/<file>
+```
+
+After apply, replace `S3_PUBLIC_BASE_URL` in
+`gitops/apps/ziyuanqishuo/values-dev.yaml` with:
+
+```bash
+tofu output -raw media_public_base_url
 ```
 
 ## 2. Configure GitHub Actions

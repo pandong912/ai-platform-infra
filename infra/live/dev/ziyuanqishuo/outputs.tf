@@ -53,8 +53,18 @@ output "media_s3_endpoint" {
 }
 
 output "media_public_base_url" {
-  description = "Public base URL for generated media URLs."
-  value       = "https://s3.${var.aws_region}.amazonaws.com/${aws_s3_bucket.media.bucket}"
+  description = "Dedicated CloudFront public base URL for generated media URLs."
+  value       = "https://${aws_cloudfront_distribution.media.domain_name}"
+}
+
+output "media_cdn_distribution_id" {
+  description = "Dedicated CloudFront distribution ID for Ziyuanqishuo media."
+  value       = aws_cloudfront_distribution.media.id
+}
+
+output "media_cdn_domain_name" {
+  description = "Dedicated CloudFront distribution domain name for Ziyuanqishuo media."
+  value       = aws_cloudfront_distribution.media.domain_name
 }
 
 output "content_cache_redis_endpoint" {

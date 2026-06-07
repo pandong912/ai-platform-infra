@@ -44,7 +44,7 @@ components:
       STORAGE_PROVIDER: s3
       S3_REGION: us-east-1
       S3_BUCKET: ziyuanqishuo-hanzi-dev
-      S3_PUBLIC_BASE_URL: https://s3.us-east-1.amazonaws.com/ziyuanqishuo-hanzi-dev
+      S3_PUBLIC_BASE_URL: https://d3cw50znwlpukd.cloudfront.net
       S3_PATH_STYLE_ACCESS_ENABLED: "false"
     resources:
       requests:
