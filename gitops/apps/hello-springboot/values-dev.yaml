@@ -4,7 +4,7 @@ components:
     replicaCount: 2
     image:
       repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/hello-springboot
-      tag: web-352cbf8
+      tag: web-a17f400
       pullPolicy: IfNotPresent
     service:
       type: ClusterIP
@@ -24,7 +24,7 @@ components:
     replicaCount: 1
     image:
       repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/hello-springboot
-      tag: grpc-352cbf8
+      tag: grpc-a17f400
       pullPolicy: IfNotPresent
     service:
       type: ClusterIP
@@ -42,7 +42,7 @@ components:
     replicaCount: 1
     image:
       repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/hello-springboot
-      tag: dubbo-352cbf8
+      tag: dubbo-a17f400
       pullPolicy: IfNotPresent
     service:
       type: ClusterIP
