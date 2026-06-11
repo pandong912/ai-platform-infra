@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "nexus.labels" . | nindent 4 }}
   annotations:
-    konghq.com/strip-path: "false"
+    konghq.com/strip-path: {{ .Values.kong.ingress.stripPath | quote }}
 spec:
   ingressClassName: {{ .Values.kong.ingress.className }}
   rules:
