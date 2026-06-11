@@ -32,21 +32,21 @@ spec:
               protocol: TCP
           startupProbe:
             httpGet:
-              path: /
+              path: {{ .Values.nexus.contextPath }}/
               port: http
             failureThreshold: {{ .Values.probes.startup.failureThreshold }}
             periodSeconds: {{ .Values.probes.startup.periodSeconds }}
             timeoutSeconds: {{ .Values.probes.startup.timeoutSeconds }}
           readinessProbe:
             httpGet:
-              path: /service/rest/v1/status
+              path: {{ .Values.nexus.contextPath }}/service/rest/v1/status
               port: http
             periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
             timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
             failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
           livenessProbe:
             httpGet:
-              path: /service/rest/v1/status
+              path: {{ .Values.nexus.contextPath }}/service/rest/v1/status
               port: http
             periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
             timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}

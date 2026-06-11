@@ -11,8 +11,12 @@ service:
   type: ClusterIP
   port: 8081
 
+nexus:
+  contextPath: /nexus
+
 env:
   INSTALL4J_ADD_VM_PARAMS: "-Xms1200m -Xmx1200m -XX:MaxDirectMemorySize=2g"
+  NEXUS_CONTEXT: nexus
 
 persistence:
   enabled: true
@@ -60,7 +64,7 @@ kong:
     host: ""
     path: /nexus
     pathType: Prefix
-    stripPath: true
+    stripPath: false
 
 nodeSelector: {}
 tolerations: []

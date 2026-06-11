@@ -41,7 +41,8 @@ The default dev deployment uses:
 - `StatefulSet` with one replica;
 - a persistent `ReadWriteOnce` PVC for `/nexus-data`;
 - `ClusterIP` service on port `8081` inside the cluster;
-- Kong ingress on path `/nexus`, so external traffic reaches Nexus through Kong Gateway.
+- Kong ingress on path `/nexus`, so external traffic reaches Nexus through Kong Gateway;
+- Nexus itself runs with context path `/nexus`, so Kong does not strip the path.
 
 After Argo CD syncs Nexus and Kong, get the Kong ALB address:
 
@@ -54,6 +55,8 @@ Then open Nexus through Kong:
 ```text
 http://<kong-alb-dns>/nexus
 ```
+
+If the page stays at `Initializing ...`, make sure the deployed Nexus pod has `NEXUS_CONTEXT=nexus` and the Kong ingress annotation is `konghq.com/strip-path: "false"`. Nexus UI and REST assets are sensitive to reverse-proxy path rewriting.
 
 For local verification without using Kong, port-forward to a free local port such as `18081`:
 
