@@ -27,6 +27,43 @@ gitops/platform/                  # Platform Helm wrappers
 gitops/apps/hello-springboot/     # Hello service Helm chart
 ```
 
+## Nexus Repository Manager
+
+Nexus can be deployed as a GitOps-managed platform component:
+
+```text
+gitops/platform/nexus
+gitops/clusters/dev/apps/nexus.yaml
+```
+
+The default dev deployment uses:
+
+- `StatefulSet` with one replica;
+- a persistent `ReadWriteOnce` PVC for `/nexus-data`;
+- `ClusterIP` service on port `8081`;
+- Kong ingress with host `nexus.example.com`.
+
+Replace `nexus.example.com` in `gitops/platform/nexus/values-dev.yaml` with the real DNS name, or access it locally:
+
+```bash
+kubectl -n nexus port-forward svc/nexus 8081:8081
+open http://localhost:8081
+```
+
+Fetch the initial admin password:
+
+```bash
+kubectl -n nexus exec statefulset/nexus -- cat /nexus-data/admin.password
+```
+
+After the first login, create Maven repositories such as:
+
+- `maven-releases`
+- `maven-snapshots`
+- `maven-public` as a group repository
+
+For production, configure backup, retention, admin password rotation, repository permissions, and TLS/public access controls before exposing Nexus broadly.
+
 ## Defaults
 
 - AWS region: `us-east-1`
