@@ -1,0 +1,40 @@
+argo-workflows:
+  fullnameOverride: argo-workflows
+
+  crds:
+    install: true
+    keep: true
+
+  singleNamespace: false
+
+  controller:
+    workflowNamespaces:
+      - argo-workflows
+    metricsConfig:
+      enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: kube-prometheus-stack
+
+  server:
+    enabled: true
+    baseHref: /argo-workflows/
+    authModes:
+      - server
+    secure: false
+    serviceType: ClusterIP
+    ingress:
+      enabled: true
+      ingressClassName: kong
+      annotations:
+        konghq.com/strip-path: "true"
+      paths:
+        - /argo-workflows
+      pathType: Prefix
+
+  workflow:
+    serviceAccount:
+      create: true
+    rbac:
+      create: true

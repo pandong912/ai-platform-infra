@@ -1,0 +1,9 @@
+apiVersion: v2
+name: argo-workflows-wrapper
+description: GitOps wrapper for Argo Workflows controller and UI
+type: application
+version: 0.1.0
+dependencies:
+  - name: argo-workflows
+    version: 1.0.14
+    repository: https://argoproj.github.io/argo-helm
