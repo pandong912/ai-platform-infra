@@ -21,6 +21,9 @@ components:
       HANZI_CONTENT_S3_JSON_BUCKET: ziyuanqishuo-hanzi-dev
       HANZI_CONTENT_S3_JSON_REGION: us-east-1
       HANZI_CONTENT_S3_JSON_PREFIX: hanzi/content/v1
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "3"
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: "0"
+      SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT: "30000"
     resources:
       requests:
         cpu: 100m
@@ -47,6 +50,9 @@ components:
       # Replace with `tofu output -raw media_public_base_url` from infra/live/dev/ziyuanqishuo after apply.
       S3_PUBLIC_BASE_URL: https://REPLACE_WITH_HANZI_MEDIA_CDN_DOMAIN
       S3_PATH_STYLE_ACCESS_ENABLED: "false"
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "3"
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: "0"
+      SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT: "30000"
     resources:
       requests:
         cpu: 100m
@@ -74,6 +80,9 @@ components:
       OIDC_PRINCIPAL_CLAIM: sub
       SPRINGDOC_SWAGGER_UI_CONFIG_URL: /hanzi/exploration/v3/api-docs/swagger-config
       SPRINGDOC_SWAGGER_UI_URL: /hanzi/exploration/v3/api-docs
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: "3"
+      SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE: "0"
+      SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT: "30000"
     resources:
       requests:
         cpu: 100m

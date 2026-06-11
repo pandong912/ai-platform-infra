@@ -1,0 +1,7 @@
+aws_region               = "us-east-1"
+project                  = "ai-video-platform"
+environment              = "dev"
+owner                    = "platform"
+domain_name              = "ai-video-platform"
+repository_name          = "maven-internal"
+upstream_repository_name = "maven-central"

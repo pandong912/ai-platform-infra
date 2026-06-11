@@ -191,6 +191,36 @@ data "aws_iam_policy_document" "app_ci" {
     ]
     resources = ["arn:aws:ecr:${var.aws_region}:*:repository/hello-springboot"]
   }
+
+  statement {
+    sid    = "CodeArtifactAuth"
+    effect = "Allow"
+    actions = [
+      "codeartifact:GetAuthorizationToken",
+      "sts:GetServiceBearerToken",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "CodeArtifactMavenReadWrite"
+    effect = "Allow"
+    actions = [
+      "codeartifact:DescribeDomain",
+      "codeartifact:DescribePackageVersion",
+      "codeartifact:DescribeRepository",
+      "codeartifact:GetPackageVersionReadme",
+      "codeartifact:GetRepositoryEndpoint",
+      "codeartifact:ListPackageVersionAssets",
+      "codeartifact:ListPackageVersionDependencies",
+      "codeartifact:ListPackageVersions",
+      "codeartifact:ListPackages",
+      "codeartifact:PublishPackageVersion",
+      "codeartifact:PutPackageMetadata",
+      "codeartifact:ReadFromRepository",
+    ]
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_policy" "app_ci" {

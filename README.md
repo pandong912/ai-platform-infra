@@ -19,6 +19,7 @@ bootstrap/state-backend/          # S3 + DynamoDB + KMS for OpenTofu state
 infra/live/dev/iam-github/        # GitHub Actions OIDC IAM roles
 infra/live/dev/network/           # VPC and subnets
 infra/live/dev/ecr/               # ECR repository for hello-springboot
+infra/live/dev/codeartifact/      # CodeArtifact Maven repositories
 infra/live/dev/eks/               # EKS cluster and controller IAM
 infra/live/dev/argocd-bootstrap/  # Argo CD Helm bootstrap and root app
 gitops/clusters/dev/apps/         # Argo CD child Applications
@@ -94,7 +95,7 @@ Application repository variables:
 - `AWS_REGION`
 - `GITOPS_REPO`, for example `your-user-or-org/ai-platform-infra`
 
-## Step 3: Create Network and ECR
+## Step 3: Create Network, ECR, and CodeArtifact
 
 ```bash
 cd infra/live/dev/network
@@ -108,7 +109,38 @@ cp backend.tf.example backend.tf
 cp terraform.tfvars.example terraform.tfvars
 tofu init
 tofu apply
+
+cd ../codeartifact
+cp backend.tf.example backend.tf
+cp terraform.tfvars.example terraform.tfvars
+tofu init
+tofu apply
 ```
+
+The `codeartifact` module creates:
+
+- a CodeArtifact domain;
+- an internal Maven repository for private jars;
+- a Maven Central proxy repository used as an upstream.
+
+Application CI can authenticate with GitHub OIDC and publish/read Maven packages:
+
+```bash
+export CODEARTIFACT_AUTH_TOKEN="$(aws codeartifact get-authorization-token \
+  --domain ai-video-platform \
+  --query authorizationToken \
+  --output text)"
+
+export CODEARTIFACT_MAVEN_URL="$(aws codeartifact get-repository-endpoint \
+  --domain ai-video-platform \
+  --repository maven-internal \
+  --format maven \
+  --query repositoryEndpoint \
+  --output text)"
+```
+
+Use these values in Maven `settings.xml` or in GitHub Actions to run `mvn deploy`
+for internal libraries and `mvn package` for services that consume them.
 
 ## Step 4: Create EKS
 
