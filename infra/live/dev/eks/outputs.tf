@@ -24,6 +24,11 @@ output "aws_load_balancer_controller_role_arn" {
   value       = module.aws_load_balancer_controller_irsa.iam_role_arn
 }
 
+output "ebs_csi_controller_role_arn" {
+  description = "IAM role ARN for aws-ebs-csi-driver controller service account."
+  value       = module.ebs_csi_irsa.iam_role_arn
+}
+
 output "node_security_group_id" {
   description = "Security group ID attached to EKS worker nodes."
   value       = module.eks.node_security_group_id
