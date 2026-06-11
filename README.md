@@ -40,14 +40,26 @@ The default dev deployment uses:
 
 - `StatefulSet` with one replica;
 - a persistent `ReadWriteOnce` PVC for `/nexus-data`;
-- `ClusterIP` service on port `8081`;
-- Kong ingress with host `nexus.example.com`.
+- `ClusterIP` service on port `8081` inside the cluster;
+- Kong ingress on path `/nexus`, so external traffic reaches Nexus through Kong Gateway.
 
-Replace `nexus.example.com` in `gitops/platform/nexus/values-dev.yaml` with the real DNS name, or access it locally:
+After Argo CD syncs Nexus and Kong, get the Kong ALB address:
 
 ```bash
-kubectl -n nexus port-forward svc/nexus 8081:8081
-open http://localhost:8081
+kubectl -n kong get ingress kong-alb
+```
+
+Then open Nexus through Kong:
+
+```text
+http://<kong-alb-dns>/nexus
+```
+
+For local verification without using Kong, port-forward to a free local port such as `18081`:
+
+```bash
+kubectl -n nexus port-forward svc/nexus 18081:8081
+open http://localhost:18081
 ```
 
 Fetch the initial admin password:

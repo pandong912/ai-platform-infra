@@ -57,9 +57,10 @@ kong:
   ingress:
     enabled: true
     className: kong
-    host: nexus.example.com
-    path: /
+    host: ""
+    path: /nexus
     pathType: Prefix
+    stripPath: true
 
 nodeSelector: {}
 tolerations: []
