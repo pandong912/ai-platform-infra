@@ -1,0 +1,6 @@
+apiVersion: v2
+name: nexus-wrapper
+description: GitOps wrapper for Sonatype Nexus Repository Manager on EKS
+type: application
+version: 0.1.0
+appVersion: "3.79.1"

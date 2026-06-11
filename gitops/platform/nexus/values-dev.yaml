@@ -1,0 +1,66 @@
+fullnameOverride: nexus
+
+replicaCount: 1
+
+image:
+  repository: sonatype/nexus3
+  tag: "3.79.1"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8081
+
+env:
+  INSTALL4J_ADD_VM_PARAMS: "-Xms1200m -Xmx1200m -XX:MaxDirectMemorySize=2g"
+
+persistence:
+  enabled: true
+  storageClassName: gp2
+  accessModes:
+    - ReadWriteOnce
+  size: 50Gi
+
+podSecurityContext:
+  fsGroup: 200
+
+securityContext:
+  runAsUser: 200
+  runAsGroup: 200
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 2Gi
+  limits:
+    cpu: "2"
+    memory: 4Gi
+
+probes:
+  startup:
+    failureThreshold: 60
+    periodSeconds: 10
+    timeoutSeconds: 5
+  readiness:
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 12
+  liveness:
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 6
+
+kong:
+  ingress:
+    enabled: true
+    className: kong
+    host: nexus.example.com
+    path: /
+    pathType: Prefix
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
