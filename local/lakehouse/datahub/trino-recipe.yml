@@ -1,0 +1,16 @@
+source:
+  type: trino
+  config:
+    host_port: localhost:8081
+    database: iceberg
+    username: trino
+    include_table_lineage: true
+    include_view_lineage: true
+    catalog_to_connector_details:
+      iceberg:
+        connector_platform: iceberg
+        env: DEV
+sink:
+  type: datahub-rest
+  config:
+    server: http://localhost:8080

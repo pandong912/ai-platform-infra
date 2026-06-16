@@ -1,0 +1,9 @@
+apiVersion: v2
+name: flyte-wrapper
+description: GitOps wrapper for Flyte OSS on EKS
+type: application
+version: 0.1.0
+dependencies:
+  - name: flyte-binary
+    version: v1.16.7
+    repository: https://helm.flyte.org

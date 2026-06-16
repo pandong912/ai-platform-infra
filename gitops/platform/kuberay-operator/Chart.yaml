@@ -1,0 +1,9 @@
+apiVersion: v2
+name: kuberay-operator-wrapper
+description: GitOps wrapper for KubeRay Operator
+type: application
+version: 0.1.0
+dependencies:
+  - name: kuberay-operator
+    version: 1.6.1
+    repository: https://ray-project.github.io/kuberay-helm/

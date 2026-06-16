@@ -1,0 +1,6 @@
+dependencies:
+- name: flyte-binary
+  repository: https://helm.flyte.org
+  version: v1.16.7
+digest: sha256:ce20bb436f5d396ff920133f370a02667f486ebb01fb30797a937f7540d245a9
+generated: "2026-06-16T23:29:21.041578+08:00"

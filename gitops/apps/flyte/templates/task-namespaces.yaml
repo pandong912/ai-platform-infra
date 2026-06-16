@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.flyteAccess.userNamespace }}
+  labels:
+    app.kubernetes.io/name: flyte
+    app.kubernetes.io/component: user-executions
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.flyteAccess.userServiceAccountName }}
+  namespace: {{ .Values.flyteAccess.userNamespace }}
+  labels:
+    app.kubernetes.io/name: flyte
+    app.kubernetes.io/component: user-executions
+  annotations:
+    eks.amazonaws.com/role-arn: {{ .Values.flyteAccess.userRoleArn | quote }}
+automountServiceAccountToken: true
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.flyteAccess.sparkServiceAccountName }}
+  namespace: {{ .Values.flyteAccess.sparkNamespace }}
+  labels:
+    app.kubernetes.io/name: flyte
+    app.kubernetes.io/component: spark-executions
+  annotations:
+    eks.amazonaws.com/role-arn: {{ .Values.flyteAccess.userRoleArn | quote }}
+automountServiceAccountToken: true
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.flyteAccess.rayNamespace }}
+  labels:
+    app.kubernetes.io/name: flyte
+    app.kubernetes.io/component: ray-executions
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.flyteAccess.rayServiceAccountName }}
+  namespace: {{ .Values.flyteAccess.rayNamespace }}
+  labels:
+    app.kubernetes.io/name: flyte
+    app.kubernetes.io/component: ray-executions
+  annotations:
+    eks.amazonaws.com/role-arn: {{ .Values.flyteAccess.userRoleArn | quote }}
+automountServiceAccountToken: true

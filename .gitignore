@@ -20,3 +20,12 @@ override.tf.json
 *_override.tf.json
 *.tmp
 *.bak
+
+# Local lakehouse PoC
+local/lakehouse/.env
+local/lakehouse/.venv/
+local/lakehouse/datahub/.state/
+
+# Flyte example local runs
+examples/flyte/dataset-builder/.venv/
+examples/flyte/dataset-builder/outputs/
