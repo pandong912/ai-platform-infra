@@ -12,7 +12,7 @@ flyteAccess:
 externalSecret:
   enabled: true
   secretName: flyte-db
-  secretStoreName: aws-secretsmanager
+  secretStoreName: aws-secrets-manager
   refreshInterval: 1h
   remoteKey: ai-video-platform/dev/flyte
 
@@ -98,7 +98,7 @@ flyte-binary:
       eks.amazonaws.com/role-arn: arn:aws:iam::209479308066:role/ai-video-platform-dev-flyte-backend
 
   flyteconnector:
-    enabled: true
+    enabled: false
 
   enabled_plugins:
     tasks:
@@ -107,7 +107,6 @@ flyte-binary:
           - container
           - sidecar
           - k8s-array
-          - connector-service
           - echo
           - spark
           - ray
