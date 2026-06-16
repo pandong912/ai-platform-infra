@@ -1,0 +1,31 @@
+{
+  "dataset_name": "video-caption-gold-v0",
+  "manifest_uri": "s3://REPLACE_WITH_FLYTE_BUCKET/dataset-builder/video-caption-gold-v0/manifest.json",
+  "plan_steps": [
+    "resolve_snapshot",
+    "filter_candidates",
+    "dedup",
+    "sample",
+    "split",
+    "validate",
+    "publish"
+  ],
+  "source_snapshot_id": "6730928189088410301",
+  "source_table": "iceberg.video.training_videos_silver",
+  "splits": {
+    "test": 500,
+    "total": 10000,
+    "train": 9000,
+    "validation": 500
+  },
+  "validation": {
+    "checks": [
+      "split_total",
+      "lineage_present"
+    ],
+    "lineage": {
+      "datahubDatasetUrn": "urn:li:dataset:(urn:li:dataPlatform:iceberg,video.training_videos_silver,PROD)"
+    },
+    "valid": true
+  }
+}
