@@ -25,7 +25,24 @@ infra/live/dev/argocd-bootstrap/  # Argo CD Helm bootstrap and root app
 gitops/clusters/dev/apps/         # Argo CD child Applications
 gitops/platform/                  # Platform Helm wrappers
 gitops/apps/hello-springboot/     # Hello service Helm chart
+local/lakehouse/                  # Local Iceberg lakehouse Docker Compose PoC
+examples/flyte/dataset-builder/   # Dataset Spec / Planner / Flyte workflow example
 ```
+
+## Local Iceberg Lakehouse PoC
+
+The local lakehouse PoC runs MinIO, Apache Polaris, PostgreSQL, Trino, and
+optional Superset/DataHub integration without changing the EKS GitOps path.
+
+See `docs/lakehouse-poc.md`.
+
+## Flyte Dataset Pipeline PoC
+
+Flyte can be deployed on EKS as the execution backend for video training Gold
+Dataset pipelines. The PoC includes AWS dependencies, GitOps Helm wrappers for
+Flyte/Spark Operator/KubeRay Operator, and a Dataset Spec / Planner example.
+
+See `docs/flyte-poc.md`.
 
 ## Nexus Repository Manager
 

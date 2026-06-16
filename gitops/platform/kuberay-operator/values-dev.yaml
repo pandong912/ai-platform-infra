@@ -1,0 +1,28 @@
+kuberay-operator:
+  fullnameOverride: kuberay-operator
+  replicas: 1
+
+  serviceAccount:
+    create: true
+    name: kuberay-operator
+
+  logging:
+    stdoutEncoder: json
+    fileEncoder: json
+
+  batchScheduler:
+    enabled: false
+    name: ""
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: false
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi

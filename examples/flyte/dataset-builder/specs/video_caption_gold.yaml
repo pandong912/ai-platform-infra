@@ -1,0 +1,34 @@
+apiVersion: dataset.ai-video-platform/v1alpha1
+kind: DatasetSpec
+metadata:
+  name: video-caption-gold-v0
+  owner: model-training
+  description: Gold dataset for video caption model warm-up training.
+source:
+  table: iceberg.video.training_videos_silver
+  snapshotId: "6730928189088410301"
+selection:
+  filters:
+    minDurationSeconds: 3
+    maxDurationSeconds: 60
+    minResolutionHeight: 720
+    allowedLicenses:
+      - internal
+      - public-domain
+  dedup:
+    key: perceptual_hash
+    threshold: 0.92
+  sample:
+    strategy: stratified
+    size: 10000
+    strata:
+      - scene_type
+      - language
+split:
+  train: 0.9
+  validation: 0.05
+  test: 0.05
+outputs:
+  manifestUri: s3://REPLACE_WITH_FLYTE_BUCKET/dataset-builder/video-caption-gold-v0/manifest.json
+  lineage:
+    datahubDatasetUrn: urn:li:dataset:(urn:li:dataPlatform:iceberg,video.training_videos_silver,PROD)

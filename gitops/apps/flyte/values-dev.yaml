@@ -1,0 +1,119 @@
+flyteAccess:
+  backendServiceAccountName: flyte-backend
+  backendRoleArn: arn:aws:iam::209479308066:role/ai-video-platform-dev-flyte-backend
+  userRoleArn: arn:aws:iam::209479308066:role/ai-video-platform-dev-flyte-user
+  userNamespace: flytesnacks-development
+  userServiceAccountName: default
+  sparkNamespace: spark-jobs
+  sparkServiceAccountName: spark
+  rayNamespace: ray-jobs
+  rayServiceAccountName: ray
+
+externalSecret:
+  enabled: true
+  secretName: flyte-db
+  secretStoreName: aws-secretsmanager
+  refreshInterval: 1h
+  remoteKey: ai-video-platform/dev/flyte
+
+flyte-binary:
+  fullnameOverride: flyte
+
+  flyte-core-components:
+    admin:
+      seedProjects:
+        - flytesnacks
+        - dataset-platform
+      seedProjectsWithDetails:
+        - name: flytesnacks
+          description: Default Flyte examples project.
+        - name: dataset-platform
+          description: Video training dataset pipeline project.
+
+  configuration:
+    database:
+      username: flyte
+      passwordPath: /etc/flyte/secrets/db/password
+      host: ai-video-flyte-dev.c8l6oosuk0q6.us-east-1.rds.amazonaws.com
+      port: 5432
+      dbname: flyte
+      options: sslmode=disable
+    storage:
+      metadataContainer: training-data-platform
+      userDataContainer: training-data-platform
+      provider: s3
+      providerConfig:
+        s3:
+          region: us-east-1
+          authType: iam
+          disableSSL: false
+          endpoint: ""
+          v2Signing: false
+    logging:
+      level: 1
+      plugins:
+        kubernetes:
+          enabled: true
+          templateUri: "https://console.aws.amazon.com/eks/home#/clusters/{kubernetes-cluster-name}/pods/{kubernetes-pod-name}?namespace={kubernetes-namespace}"
+    auth:
+      enabled: false
+    propeller:
+      createCRDs: true
+      literalOffloadingConfigEnabled: true
+    inline:
+      plugins:
+        k8s:
+          default-env-vars:
+            - AWS_REGION: us-east-1
+        logs:
+          kubernetes-enabled: true
+
+  deployment:
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+    extraVolumes:
+      - name: flyte-db-secret
+        secret:
+          secretName: flyte-db
+    extraVolumeMounts:
+      - name: flyte-db-secret
+        mountPath: /etc/flyte/secrets/db
+        readOnly: true
+
+  service:
+    type: ClusterIP
+
+  ingress:
+    create: false
+
+  serviceAccount:
+    create: true
+    name: flyte-backend
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::209479308066:role/ai-video-platform-dev-flyte-backend
+
+  flyteconnector:
+    enabled: true
+
+  enabled_plugins:
+    tasks:
+      task-plugins:
+        enabled-plugins:
+          - container
+          - sidecar
+          - k8s-array
+          - connector-service
+          - echo
+          - spark
+          - ray
+        default-for-task-types:
+          container: container
+          sidecar: sidecar
+          container_array: k8s-array
+          spark: spark
+          ray: ray
