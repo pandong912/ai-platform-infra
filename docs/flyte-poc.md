@@ -65,7 +65,7 @@ arn:aws:iam::REPLACE_WITH_ACCOUNT_ID:role/ai-video-platform-dev-flyte-user
 
 Use the outputs from `flyte-deps`.
 
-The chart expects External Secrets Operator and the `aws-secretsmanager` `ClusterSecretStore` to exist. The `ExternalSecret` reads `db_password` from the AWS Secrets Manager JSON created by OpenTofu and writes it to the Kubernetes secret `flyte-db`.
+The chart expects External Secrets Operator and the `aws-secrets-manager` `ClusterSecretStore` to exist. The `ExternalSecret` reads `db_password` from the AWS Secrets Manager JSON created by OpenTofu and writes it to the Kubernetes secret `flyte-db`.
 
 ## 3. Sync GitOps Apps
 
