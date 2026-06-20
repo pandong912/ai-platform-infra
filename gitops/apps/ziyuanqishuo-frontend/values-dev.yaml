@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: 209479308066.dkr.ecr.us-east-1.amazonaws.com/ziyuanqishuo-frontend
-  tag: frontend-ba582f2
+  tag: frontend-16716cb
   pullPolicy: IfNotPresent
 
 service:
